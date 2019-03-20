@@ -1,0 +1,268 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>全国高速公路业务大数据分析</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/jquery.fullPage.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+
+            padding-top: 50px;
+        }
+
+        .page {
+            background: #CAE1FF;
+            height: 100%;
+        }
+
+        h3 {
+            position: absolute;
+            top: 100px;
+            width: 100%;
+            text-align: middle;
+        }
+
+        iframe {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .dropdown-submenu {
+            position: relative;
+            min-width: 100%
+        }
+
+        .dropdown-submenu > .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -6px;
+            margin-left: -1px;
+            -webkit-border-radius: 0 6px 6px 6px;
+            -moz-border-radius: 0 6px 6px;
+            border-radius: 0 6px 6px 6px;
+        }
+
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-submenu > a:after {
+            display: block;
+            content: " ";
+            float: right;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            border-width: 5px 0 5px 5px;
+            border-left-color: #ccc;
+            margin-top: 5px;
+            margin-right: -10px;
+        }
+
+        .dropdown-submenu:hover > a:after {
+            border-left-color: #fff;
+        }
+
+        .dropdown-submenu.pull-left {
+            float: none;
+        }
+
+        .dropdown-submenu.pull-left > .dropdown-menu {
+            left: -100%;
+            margin-left: 10px;
+            -webkit-border-radius: 6px 0 6px 6px;
+            -moz-border-radius: 6px 0 6px 6px;
+            border-radius: 6px 0 6px 6px;
+        }
+
+
+    </style>
+    <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+    <script src="{% static 'js/jquery.fullPage.min.js' %}"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <a class="navbar-brand" href="#">全国高速公路业务大数据分析</a>
+    <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">标识站设置
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu ">
+                    <li><a href="markstation" target="iframe_content">标识站位置</a></li>
+                    <li><a href="pathreduction" target="iframe_content">路径还原</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">货车收费模式分析
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu ">
+                    <li><a href="chargebytype/贵州" target="iframe_content">车型收费直观影响</a></li>
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">车型收费潜在影响</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="potentialloss/贵州/mloss/0.5" target="iframe_content">收费额潜在减少分析</a></li>
+                            <li><a href="potentialloss/贵州/tloss/0.5" target="iframe_content">通行量潜在减少分析</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">限超后影响</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="overload/贵州/mloss" target="iframe_content">超重折算后罚款减少分析</a></li>
+                            <li><a href="overload/贵州/tloss" target="iframe_content">超重折算后通行量赠加分析</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="axischarge/贵州" target="iframe_content">按车轴收费统计分析</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">系统数据处理概况
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu ">
+                    <li><a href="datavolum" target="iframe_content">系统数据量</a></li>
+                    <li><a href="errordatavolum" target="iframe_content">错误数据概况</a></li>
+                    <li><a href="datarepairvolum" target="iframe_content">错误数据修复概况</a></li>
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">识别错误车站分布</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="instation_plate" target="iframe_content">车牌识别错误入口站分布</a></li>
+                            <li><a href="outstation_plate" target="iframe_content">车牌识别错误出口站分布</a></li>
+                            <li><a href="cxErrStation" target="iframe_content">车型识别错误收费站分布</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">高速公路运行画像
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu ">
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">出行基本特征</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="etcmtcdaytranscount/北京" target="iframe_content">日通行量与日交易金额</a></li>
+                            <li><a href="cartypedaytranscount/北京" target="iframe_content">客车分车型日通行量</a></li>
+                            <li><a href="trucktypedaytranscount/北京" target="iframe_content">货车分车型日通行量</a></li>
+                            <li><a href="vehicletypedaytranscount/北京" target="iframe_content">客货车日通行量对比</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">通行费基本特征</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="vehicletransfeepie/北京/北京/北京/2018-03-15/2018-03-15" target="iframe_content">客货车占比</a>
+                            </li>
+                            <li><a href="cartypedayfee/北京" target="iframe_content">客车分车型日通行费</a></li>
+                            <li><a href="trucktypedayfee/北京" target="iframe_content">货车分车型日通行费</a></li>
+                            <li><a href="vehicletypedayfee/北京" target="iframe_content">客货车日通行费对比</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">区域运输特征</a>
+                        <ul class="dropdown-menu" style="min-width:100%;">
+                            <li><a href="truckheavycount/北京/入口/2018-03-15/2018-03-15" target="iframe_content"
+                                   style="min-width: 20px">收费站货车通过重量</a></li>
+                            <li><a href="trafficvolume/北京/入口/2018-03-15/2018-03-15" target="iframe_content">收费站点通行量</a>
+                            </li>
+                            <li><a href="trafficfee/北京/2018-03-15/2018-03-15" target="iframe_content">收费站点通行费</a></li>
+                            <li><a href="truck_transaction/北京" target="iframe_content">货车通道交易量</a></li>
+                            <li><a href="truck_cargo/北京" target="iframe_content">货车通道货运</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">绿通印象</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="freetranscount" target="iframe_content">免费车日通行量</a></li>
+                            <li><a href="lvtong_transaction/北京" target="iframe_content">绿通通道通行量</a></li>
+                            <li><a href="lvtong_cargo/北京" target="iframe_content">绿通通道货运</a></li>
+                            <li><a href="lvtongchestation/北京/入口/2018-03-15/2018-03-15"
+                                   target="iframe_content">绿通车收费站分布</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown-submenu disabled">
+                        <a href="faultRoad_impact/重庆/550749/map" target="iframe_content">故障路段影响范围分析</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">疑似U型掉头逃费现象
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu ">
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">疑似绿通车逃费</a>
+                        <ul class="dropdown-menu" style="min-width:100%;">
+                            <li><a href="lvtongchelist" target="iframe_content" style="min-width: 20px">疑似逃费名单</a></li>
+                            <li><a href="Ltransaction" target="iframe_content">绿通车出站口分布</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown-submenu disabled">
+                        <a tabindex="-1" href="#">疑似货车逃费</a>
+                        <ul class="dropdown-menu" style="min-width:100%;">
+                            <li><a href="uturn" target="iframe_content" style="min-width: 20px">疑似逃费名单</a></li>
+                            <li><a href="HTransaction" target="iframe_content">车重较轻车站口分布</a></li>
+                        </ul>
+
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">有入无出
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu ">
+                    <li><a href="YouRuWuChulist" target="iframe_content">详细信息表</a></li>
+                    <li><a href="YouRuWuChuStation" target="iframe_content">入口收费站分布</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">单车倒卡
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu ">
+                    <li><a href="cardlist" target="iframe_content">疑似倒卡名单</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">通行卡业务
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu ">
+                    <li><a href="carddaycount/北京" target="iframe_content">每日调度量</a></li>
+                    <li><a href="cardtrans/北京" target="iframe_content">卡调度方向</a></li>
+                    <li><a href="cardtransoverpro/河北" target="iframe_content">省间卡调度</a></li>
+                    <li><a href="cardcycle/浙江/江苏/山东/0" target="iframe_content">卡周转周期</a></li>
+                    <li><a href="cardindex/浙江/江苏/山东" target="iframe_content">通行卡指标对比</a></li>
+                    <li><a href="idealtrans/浙江" target="iframe_content">理论卡调拨</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="chongqing_od" target="iframe_content">疑似倒卡名单</a>
+            </li>
+            <li><a href="javascript:;" target="iframe_content">关于我们</a></li>
+            <li><a> </a></li>
+        </ul>
+    </div>
+</nav>
+<div class="page">
+    <iframe src="" id="iframe_content" name="iframe_content" frameborder="0"></iframe>
+</div>
+</body>
+</html>

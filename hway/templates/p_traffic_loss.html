@@ -1,0 +1,369 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="height:100%;width:100%">
+<head>
+    <meta charset="UTF-8">
+    <title>按日货车分型通行量统计对比图</title>
+
+    <script type="text/javascript" src='{% static 'echarts.min.js' %}'></script>
+    <script src="{% static 'china.js' %}"></script>
+</head>
+<body style="width:100%;height:100%; margin: 0">
+    <div style="height:100%;width:30%;float:left">
+        <div id="chart1" style="width:100%;height:50%"></div>
+        <div id="chart2" style="width:100%;height:50%"></div>
+    </div>
+    <div id="chart3" style="width:70%;height:90%;float:left ">
+    </div>
+    <div id="chart4" style="width:70%;height:10%;float:left ">
+        <a href="../../mloss/0.5">潜在收费减少</a>
+        <a href="../../tloss/0.5">通行量减少</a>
+        <br></br>
+        <a href="../0.1">c=0.1</a>
+        <a href="../0.2">c=0.2</a>
+        <a href="../0.3">c=0.3</a>
+        <a href="../0.4">c=0.4</a>
+        <a href="../0.5">c=0.5</a>
+        <a href="../0.6">c=0.6</a>
+        <a href="../0.7">c=0.7</a>
+    </div>
+</body>
+<script type="text/javascript">
+    // 初始化图表标签
+               
+    dom = document.getElementById("chart1");
+    var myChart1 = echarts.init(dom);
+    option = null;
+
+    var data = {{ trafficvolume|safe }} ;
+ /*   var min = data[0]['value'] ;
+    var max = data[0]['value'] ;
+    for(var i = 1 ; i < data.length ; i++)
+    {
+        if(data[i]['value']<min)
+            min = data[i]['value'] ;
+        if(data[i]['value']>max)
+            max = data[i]['value'] ;
+    }*/
+    for(var i = 0 ; i < data.length ; i++)
+    {
+        for(var j = 0 ; j < data.length - i-1 ; j++ )
+        {
+            if(data[j]['value']<data[j+1]['value'])
+            {
+                var tmp = data[j] ;
+                data[j] = data[j+1] ;
+                data[j+1] = tmp ;
+            }
+        }
+    }
+    var min = data[data.length-1]['value'] ;
+    var max = data[0]['value'] ;
+
+    var data1 = new Array();
+    var dataAxis1 = new Array();
+    for(var i=0;i<data.length;i++)
+    {
+        data1[data.length-i-1] = data[i] ;
+        dataAxis1[i] = data[i]['name'] ;
+    }
+    for(var i = 0 ;i<data1.length ; i++)
+    {
+        data1[i]['value'] = data1[i]['value']/10000 ;
+    }
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            left: 'right',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'0',
+              right: '10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+              data: {{ trafficvolume|safe }}
+              // 文本位置修正
+            
+          },
+        ]
+    };
+  
+    if (option && typeof option === "object") {
+        myChart1.setOption(option, true);
+    }
+    myChart1.on('click', function (param) {
+        var name = param.name;
+        location.href="../../../../potentialloss/"+name+"/mloss/0.5";
+    })
+
+    dom = document.getElementById("chart2");
+    var myChart2 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+        title: [
+            {
+                id: 'statistic',
+                right: 120,
+                bottom: 40,
+                width: 100,
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 16
+                }
+            }
+        ],
+        tooltip : {
+            trigger: 'item'
+        },
+        grid: {
+            right: 40,
+            top: 100,
+            width: '80%'
+        },
+        yAxis: {
+            type: 'value',
+            min: 0,
+            scale: true,
+            position: 'top',
+            boundaryGap: false,
+            splitLine: {show: false},
+            axisLine: {show: false},
+            axisTick: {show: false},
+            axisLabel: {margin: 2, },
+            axisLabel: {
+                formatter: '{value} 万'
+            }
+        },
+        xAxis: {
+            type: 'category',
+            nameTextStyle:
+            {
+                fontStyle:'italic',
+                fontSize:20
+            },
+            nameGap: 30,
+            axisLine: {show: false,},
+            axisTick: {show: false,},
+            axisLabel: {interval: 0,
+                formatter:function(value){
+                    return value.split("").join('\n');
+                }
+            },
+            data:dataAxis1,
+           
+        },
+        series : [
+            {
+                id: 'bar',
+                zlevel: 2,
+                type: 'bar',
+                name:'收费站点：通行量(万车次)',
+                symbol: 'none',
+                itemStyle: {
+                    normal: {
+                        color: '#ddb926'
+                    }
+                },
+                data:data
+            }
+        ]
+    };
+
+    if (option && typeof option === "object") {
+        myChart2.setOption(option, true);
+    }
+
+    var myChart3 = echarts.init(document.getElementById('chart3'));
+    
+    var pro = 0;
+    var xAxis = {{ xAxis|safe }};
+    var data = {{ data|safe }};
+    var ratio = new Array() ;
+    var c = {{c|safe}}
+
+ 
+    var options = {
+        title: {
+        text: {{ province|safe }}+'货车潜在通行量减少统计图(c= '+c+')',
+        left:'center',
+        },
+    tooltip: {
+        trigger: 'axis',
+    },
+    brush: {
+        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+        xAxisIndex: 0
+    },
+    toolbox: {
+        feature: {
+            magicType: {
+                type: ['stack', 'tiled']
+            },
+            dataView: {
+                show: true,
+                readOnly: false
+            },
+            restore: {
+                show: true
+            },
+            saveAsImage: {
+                show: true
+            }
+        }
+    },
+    // toolbox: {
+    //     feature: {
+    //         
+    //     }
+    // },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    legend: {
+        data:['','','','低档-11型','低档-12型','低档-13型','低档-14型','低档-15型','高档-11型','高档-12型','高档-13型','高档-14型','高档-15型']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    dataZoom: [{
+        type: 'inside'
+    }, {
+        type: 'slider'
+    }],
+    xAxis : [
+        {
+            type : 'category',
+            data : xAxis
+        },
+    ],
+    yAxis : [
+        // {
+        //     type: 'value',
+        //     name: '潜在收费减少',
+        // // min: 0,
+        // // max: 1500000,
+        //     position: 'left',
+        //     axisLabel: {
+        //         formatter: '{value} 元'
+        //     }
+        // },
+        {
+            type: 'value',
+            name: '通行量减少',
+        // min: 0,
+        // max: 1500000,
+            position: 'left',
+            axisLabel: {
+                formatter: '{value} 车次'
+            }
+        }
+    ],
+    series : [
+        // {
+        //     name:'低档',
+        //     type:'bar',
+        //     data:data['low_sum']
+        // },
+        {
+            name:'低档-11型',
+            type:'bar',
+            stack: '低档通行量',
+            data:data['traffic_low_1']
+        },
+        {
+            name:'低档-12型',
+            type:'bar',
+            stack: '低档通行量',
+            data:data['traffic_low_2']
+        },
+        {
+            name:'低档-13型',
+            type:'bar',
+            stack: '低档通行量',
+            data:data['traffic_low_3']
+        },
+        {
+            name:'低档-14型',
+            type:'bar',
+            stack: '低档通行量',
+            data:data['traffic_low_4']
+        },
+        {
+            name:'低档-15型',
+            type:'bar',
+            stack: '低档通行量',
+            data:data['traffic_low_5']
+        },
+        {
+            name:'高档-11型',
+            type:'bar',
+            stack: '高档通行量',
+            data:data['traffic_high_1']
+        },
+        {
+            name:'高档-12型',
+            type:'bar',
+            stack: '高档通行量',
+            data:data['traffic_high_2']
+        },
+        {
+            name:'高档-13型',
+            type:'bar',
+            stack: '高档通行量',
+            data:data['traffic_high_3']
+        },
+        {
+            name:'高档-14型',
+            type:'bar',
+            stack: '高档通行量',
+            data:data['traffic_high_4']
+        },
+        {
+            name:'高档-15型',
+            type:'bar',
+            stack: '高档通行量',
+            data:data['traffic_high_5']
+        },
+        
+    ]
+};
+    myChart3.setOption(options);
+   
+</script>
+</html>

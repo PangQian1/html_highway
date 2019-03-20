@@ -1,0 +1,344 @@
+{% load static %}
+<!DOCTYPE html>
+<html style="height:100%;width:100%">
+<head>
+
+    <meta charset="utf-8">
+
+    <title>ECharts</title>
+    <link rel="stylesheet" href="//minedata.cn/minemapapi/v2.0.0/minemap.css">
+    <script src="//minedata.cn/minemapapi/v2.0.0/minemap.js"></script>
+    <script src="//minedata.cn/minemapapi/v2.0.0/plugins/earth/minemap-earth.js"></script>
+    <style>
+        html,
+        body,
+        #map {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body style="height:100%;width:100%;margin:0">
+
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="map" style="height:100%;width:60%;float:left"></div>
+    
+    <div style="height:100%;width:40%;float:left">
+        <div id="container2" style="width:100%;height:50%"></div>
+        <div id="container3" style="width:100%;height:50%"></div>
+    </div>
+    <!-- ECharts单文件引入 -->
+    <script type="text/javascript" src="{% static 'echarts.js' %}"></script>
+    <script src="{% static 'china.js' %}"></script>
+    <script src="{% static 'province/anhui.js' %}"></script>
+    <script src="{% static 'province/beijing.js' %}"></script>
+    <script src="{% static 'province/chongqing.js' %}"></script>
+    <script src="{% static 'province/fujian.js' %}"></script>
+    <script src="{% static 'province/gansu.js' %}"></script>
+    <script src="{% static 'province/guangdong.js' %}"></script>
+    <script src="{% static 'province/guangxi.js' %}"></script>
+    <script src="{% static 'province/guizhou.js' %}"></script>
+    <script src="{% static 'province/hainan.js' %}"></script>
+    <script src="{% static 'province/hebei.js' %}"></script>
+    <script src="{% static 'province/heilongjiang.js' %}"></script>
+    <script src="{% static 'province/henan.js' %}"></script>
+    <script src="{% static 'province/hubei.js' %}"></script>
+    <script src="{% static 'province/hunan.js' %}"></script>
+    <script src="{% static 'province/jiangsu.js' %}"></script>
+    <script src="{% static 'province/jiangxi.js' %}"></script>
+    <script src="{% static 'province/jilin.js' %}"></script>
+    <script src="{% static 'province/liaoning.js' %}"></script>
+    <script src="{% static 'province/neimenggu.js' %}"></script>
+    <script src="{% static 'province/ningxia.js' %}"></script>
+    <script src="{% static 'province/qinghai.js' %}"></script>
+    <script src="{% static 'province/shandong.js' %}"></script>
+    <script src="{% static 'province/shanghai.js' %}"></script>
+    <script src="{% static 'province/shanxi.js' %}"></script>
+    <script src="{% static 'province/shanxi1.js' %}"></script>
+    <script src="{% static 'province/sichuan.js' %}"></script>
+    <script src="{% static 'province/tianjin.js' %}"></script>
+    <script src="{% static 'province/xinjiang.js' %}"></script>
+    <script src="{% static 'province/xizang.js' %}"></script>
+    <script src="{% static 'province/yunnan.js' %}"></script>
+    <script src="{% static 'province/zhejiang.js' %}"></script>
+
+    <script type="text/javascript">
+        minemap.domainUrl = '//minedata.cn';
+	    minemap.dataDomainUrl = '//datahive.minedata.cn';
+	    minemap.spriteUrl = '//minedata.cn/minemapapi/v2.0.0/sprite/sprite';
+	    minemap.serviceUrl = '//minedata.cn/service';
+        minemap.accessToken = 'f7bf94956c3d4693bab79b5a63498f61';
+        minemap.solution = 4894;
+
+
+        // var dom = document.getElementById("map");
+        // var myChart = echarts.init(dom);
+        // wx code
+        var path_trace  = {{ path|safe }};
+        var map = new minemap.EarthMap({
+            container: 'map',
+            style: "//minedata.cn/service/solu/style/id/4894",
+            center: [116, 39],
+            zoom: 2,
+            pitch: 0,
+            maxZoom: 17,
+            minZoom: 1,
+            // 是否显示地球
+            hasEarth: true,
+            // 地球与地图切换zoom
+            earthSwitch: 5,
+            // 两级覆盖图url（解决腾讯影像两级空白）
+            maskUrl: "//minedata.cn/minemapapi/v2.0.0/plugins/earth/base.png",
+            // 星空背景图url
+            backgroundUrl: "//minedata.cn/minemapapi/v2.0.0/plugins/earth/starBackground.jpg",
+            // 栅格图服务（默认腾讯卫星影像）
+            mapTileService: "tecent"
+        });
+
+        map.repaint = true;
+        // 禁止倾斜
+        map.dragRotate.disable();
+
+        /* 
+         * dynamic-line运动逻辑：
+         * 图层维护一个count，count在每一秒加speed
+         */
+        map.addErathLayer({
+            id: 'dynamic',
+            type: 'dynamic-line',
+            // 运动总count数
+            segmentCount: 400.0,
+            // 切段数
+            segmentGroup: 50.0,
+            // 运动速度
+            speed: 0.045,
+            // [起点，终点，切段数，高度，开始绘制count数，颜色，透明度，线宽]
+            path: path_trace
+        });
+
+
+
+
+
+        // lwq code:
+        var app = {};
+        var option = null;
+        var geoCoordMap = {{ geo|safe }} ;
+
+        var tv = {{ tv|safe }} ;
+        var min = tv[0]['value'] ;
+        var max = tv[0]['value'] ;
+        for(var i = 1 ; i < tv.length ; i++)
+        {
+            if(tv[i]['value']<min)
+                min = tv[i]['value'] ;
+            if(tv[i]['value']>max)
+                max = tv[i]['value'] ;
+        }
+
+        var data2 = {{ d2|safe }} ;
+
+        for (var i = 0 ; i < data2.length ; i++) {
+            for (var j = 0 ; j < data2.length - i - 1 ; j++) {
+                if (data2[j]['value'] < data2[j + 1]['value']) {
+                    var tmp = data2[j];
+                    data2[j] = data2[j + 1];
+                    data2[j + 1] = tmp;
+                }
+            }
+        }
+        var data = {{ d1|safe }} ;
+        var data3  = {{ d3|safe }} ;
+        for(var i = 0 ; i < data3.length ; i++)
+        {
+            for(var j = 0 ; j < data3.length - i-1 ; j++ )
+            {
+                if(data3[j]['value']<data3[j+1]['value'])
+                {
+                    var tmp = data3[j] ;
+                    data3[j] = data3[j+1] ;
+                    data3[j+1] = tmp ;
+                }
+            }
+        }
+
+
+        var data1 = new Array();
+        var datatop10 = new Array();
+        for(var i=0;i<5;i++)
+        {
+            data1[10-i-1] = data3[i] ;
+            datatop10[10-i-1] = data3[i]['name'] ;
+        }
+        var convertData2 = function (data) {
+            var res = [];
+            for (var i = 0; i < data.length; i++) {
+                var geoCoord = geoCoordMap[data[i].name];
+                if (geoCoord) {
+                    res.push({
+                        name: data[i].name,
+                        value: geoCoord.concat(data[i].value)
+                    });
+                }
+            }
+            return res;
+        };
+
+
+        var convertData = function (data) {
+            var res = [];
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                var fromCoord = geoCoordMap[dataItem[0].name];
+                var toCoord = geoCoordMap[dataItem[1].name];
+                if (fromCoord && toCoord) {
+                    res.push({
+                        fromName: dataItem[0].name,
+                        toName: dataItem[1].name,
+                        coords: [fromCoord, toCoord],
+                        //  value: dataItem[1].value,
+                    });
+                }
+            }
+            return res;
+        };
+
+        dom = document.getElementById("container2");
+        var myChart2 = echarts.init(dom);
+        option = null;
+
+        option = {
+            backgroundColor: '#404a59',
+            animation: true,
+            animationDuration: 1000,
+            animationEasing: 'cubicInOut',
+            animationDurationUpdate: 1000,
+            animationEasingUpdate: 'cubicInOut',
+            title: [
+                {
+                    id: 'statistic',
+                    right: 120,
+                    top: 40,
+                    width: 100,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: 16
+                    }
+                }
+            ],
+            tooltip : {
+                trigger: 'item'
+            },
+            grid: {
+                right: 50,
+                top: 100,
+                width: '80%'
+            },
+            xAxis: {
+                type: 'value',
+                min: 0,
+                scale: true,
+                position: 'top',
+                boundaryGap: false,
+                splitLine: {show: false},
+                axisLine: {show: false},
+                axisTick: {show: false},
+                axisLabel: {margin: 2, textStyle: {color: '#aaa'}},
+            },
+            yAxis: {
+                type: 'category',
+                name: 'ODTOP5',
+                nameTextStyle:
+                {
+                    fontStyle:'italic',
+                    fontSize:20
+                },
+                nameGap: 30,
+                axisLine: {show: false, lineStyle: {color: '#ddd'}},
+                axisTick: {show: false, lineStyle: {color: '#ddd'}},
+                axisLabel: {interval: 0, textStyle: {color: '#ddd'}},
+                data:datatop10
+            },
+            series : [
+                {
+                    id: 'bar',
+                    zlevel: 2,
+                    type: 'bar',
+                    name:'调运量：',
+                    symbol: 'none',
+                    itemStyle: {
+                        normal: {
+                            color: '#ddb926'
+                        }
+                    },
+                    data:data1,
+                }
+            ]
+        };
+
+        if (option && typeof option === "object") {
+            myChart2.setOption(option, true);
+        }
+
+        dom = document.getElementById("container3");
+        var myChart3 = echarts.init(dom);
+        option = null;
+
+        option = {
+            backgroundColor: '#404a59',
+            animation: true,
+            animationDuration: 1000,
+            animationEasing: 'cubicInOut',
+            animationDurationUpdate: 1000,
+            animationEasingUpdate: 'cubicInOut',
+
+            tooltip : {
+                trigger: 'item'
+            },
+            visualMap: {
+                left: 'right',
+                min: min,
+                max: max,
+                inRange: {
+                    color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+                },
+                text: ['High', 'Low'],           // 文本，默认为数值文本
+                calculable: true
+            },
+            series : [
+              {
+                  name:"全国入口收费站货车通过重量分布图",
+                  type: 'map',
+                  roam: false,
+                  map: 'china',
+                  left: '10' ,
+                  top:'0',
+                  right: '10',
+                  bottom:'10',
+                  zoom: 0.9,
+                  itemStyle: {
+                      emphasis: { label: { show: true } }
+                  },
+                  data: {{ tv|safe }},
+                  // 文本位置修正
+
+              },
+            ]
+        };
+
+        if (option && typeof option === "object") {
+            myChart3.setOption(option, true);
+        }
+        myChart3.on('click', function (param) {
+            var name = param.name;
+            if(name!='海南'&&name!='西藏'&&name!='台湾')
+                //alert("../../../../../truckheavycount/"+name+"/"+{{ tp|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }}) ;
+                location.href="../"+name;
+        })
+
+    </script>
+</body>
+</html>

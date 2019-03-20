@@ -1,0 +1,138 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="height:100%;width:100%">
+<head>
+    <meta charset="UTF-8">
+    <title>累计通行量与累计卡调度量</title>
+
+    <script type="text/javascript" src='{% static 'echarts.min.js' %}'></script>
+</head>
+<body style="width:100%;height:100%; margin: 0">
+    <div id="chart" style="width:100%;height:100%"></div>
+</body>
+<script type="text/javascript">
+    // 初始化图表标签
+
+    var myChart = echarts.init(document.getElementById('chart'));
+    
+    var pro = 0;
+    var dataAxis = {{ dAxis|safe }};
+    var acccard = {{ dcard|safe }};
+    var accmtc = {{ dmtc|safe }};
+    for(var i = 0 ; i < dataAxis.length ; i++)
+    {
+        for(var j = 0 ; j < dataAxis.length - i-1 ; j++ )
+        {
+            if(dataAxis[j]>dataAxis[j+1])
+            {
+                var tmp = dataAxis[j] ;
+                dataAxis[j] = dataAxis[j+1] ;
+                dataAxis[j+1] = tmp ;
+                tmp = acccard[j] ;
+                acccard[j] = acccard[j+1] ;
+                acccard[j+1] = tmp ;
+                tmp = accmtc[j] ;
+                accmtc[j] = accmtc[j+1]
+                accmtc[j+1] = tmp ;
+            }
+        }
+    }
+ 
+    var options = {
+    title: {
+        text: {{ province|safe }}+'-'+{{ station|safe }},
+            left:'center',
+        },
+    tooltip: {
+        trigger: 'axis',
+    },
+    toolbox: {
+        feature: {
+            dataView: {
+                show: true,
+                readOnly: false
+            },
+            restore: {
+                show: true
+            },
+            saveAsImage: {
+                show: true
+            }
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    legend: {
+        data: ['','','','累计卡调拨量','累计通行量']
+    },
+    dataZoom: [{
+        type: 'inside'
+    }, {
+        type: 'slider'
+    }],
+    xAxis: [{
+        type: 'category',
+        axisTick: {
+            alignWithLabel: true
+        },
+        data:dataAxis
+    }],
+    yAxis: [{
+        type: 'value',
+        name: '数量',
+       // min: 0,
+       // max: 1500000,
+        position: 'left',
+        axisLabel: {
+            formatter: '{value} 次'
+        }
+        
+    },],
+    series: [{
+        name: '累计卡调拨量',
+        type: 'line',
+        label: {
+            normal: {
+                show: true,
+                position: 'top',
+            }
+        },
+        lineStyle: {
+            normal: {
+                width: 3,
+          //      shadowColor: 'rgba(0,0,0,0.4)',
+           //     shadowBlur: 10,
+             //   shadowOffsetY: 10
+            }
+        },
+        data: acccard, 
+    },
+    {
+        name: '累计通行量',
+        type: 'line',
+        label: {
+            normal: {
+                show: true,
+                position: 'top',
+            }
+        },
+        lineStyle: {
+            normal: {
+                width: 3,
+           //     shadowColor: 'rgba(0,0,0,0.4)',
+             //   shadowBlur: 10,
+               // shadowOffsetY: 10
+            }
+        },
+        data: accmtc, 
+    },
+    ]
+};	
+    myChart.setOption(options);
+   
+</script>
+</html>

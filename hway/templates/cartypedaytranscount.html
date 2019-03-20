@@ -1,0 +1,313 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="height:100%">
+<head>
+    <meta charset="UTF-8">
+    <title>按日客车分型通行量统计对比图</title>
+    <script type="text/javascript" src='{% static 'echarts.min.js' %}'></script>
+    <script src="{% static 'china.js' %}"></script>
+</head>
+<body style="width:100%;height:100%; margin: 0">
+    <div style="height:100%;width:30%;float:left">
+        <div id="chart1" style="width:100%;height:50%"></div>
+        <div id="chart2" style="width:100%;height:50%"></div>
+    </div>
+    <div id="chart3" style="width:70%;height:100%;float:left "></div>
+</body>
+<script type="text/javascript">
+
+
+    var data = {{ trafficvolume|safe }} ;
+    /*   var min = data[0]['value'] ;
+       var max = data[0]['value'] ;
+       for(var i = 1 ; i < data.length ; i++)
+       {
+           if(data[i]['value']<min)
+               min = data[i]['value'] ;
+           if(data[i]['value']>max)
+               max = data[i]['value'] ;
+       }*/
+    for(var i = 0 ; i < data.length ; i++)
+    {
+        for(var j = 0 ; j < data.length - i-1 ; j++ )
+        {
+            if(data[j]['value']<data[j+1]['value'])
+            {
+                var tmp = data[j] ;
+                data[j] = data[j+1] ;
+                data[j+1] = tmp ;
+            }
+        }
+    }
+    var min = data[data.length-1]['value'] ;
+    var max = data[0]['value'] ;
+
+    var data1 = new Array();
+    var dataAxis1 = new Array();
+    for(var i=0;i<data.length;i++)
+    {
+        data1[data.length-i-1] = data[i] ;
+        dataAxis1[i] = data[i]['name'] ;
+    }
+    for(var i = 0 ;i<data1.length ; i++)
+    {
+        data1[i]['value'] = data1[i]['value']/10000 ;
+    }
+
+    dom = document.getElementById("chart1");
+    var myChart1 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            left: 'right',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'0',
+              right: '10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+               data: {{ trafficvolume|safe }}
+              // 文本位置修正
+            
+          },
+        ]
+    };
+  
+    if (option && typeof option === "object") {
+        myChart1.setOption(option, true);
+    }
+    myChart1.on('click', function (param) {
+        var name = param.name;
+        location.href="../../cartypedaytranscount/"+name;
+    })
+
+    dom = document.getElementById("chart2");
+    var myChart2 = echarts.init(dom);
+    option = null;
+
+    dom = document.getElementById("chart2");
+    var myChart2 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+        title: [
+            {
+                id: 'statistic',
+                right: 120,
+                bottom: 40,
+                width: 100,
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 16
+                }
+            }
+        ],
+        tooltip : {
+            trigger: 'item'
+        },
+        grid: {
+            right: 40,
+            top: 100,
+            width: '80%'
+        },
+        yAxis: {
+            type: 'value',
+            min: 0,
+            scale: true,
+            position: 'top',
+            boundaryGap: false,
+            splitLine: {show: false},
+            axisLine: {show: false},
+            axisTick: {show: false},
+            axisLabel: {margin: 2, },
+            axisLabel: {
+                formatter: '{value} 万'
+            }
+        },
+        xAxis: {
+            type: 'category',
+            nameTextStyle:
+            {
+                fontStyle:'italic',
+                fontSize:20
+            },
+            nameGap: 30,
+            axisLine: {show: false,},
+            axisTick: {show: false,},
+            axisLabel: {interval: 0,
+                formatter:function(value){
+                    return value.split("").join('\n');
+                }
+            },
+            data:dataAxis1,
+           
+        },
+        series : [
+            {
+                id: 'bar',
+                zlevel: 2,
+                type: 'bar',
+                name:'收费站点：通行量(万车次)',
+                symbol: 'none',
+                itemStyle: {
+                    normal: {
+                        color: '#ddb926'
+                    }
+                },
+                data:data
+            }
+        ]
+    };
+
+    if (option && typeof option === "object") {
+        myChart2.setOption(option, true);
+    }
+
+
+
+    // 初始化图表标签
+    var myChart3 = echarts.init(document.getElementById('chart3'));
+    var dataAxis ={{ dAxis|safe }} ;
+    var data1 = {{ car1|safe }} ;
+    var data2 = {{ car2|safe }} ;
+    var data3 = {{ car3|safe }} ;
+    var data4 = {{ car4|safe }} ;
+    var ratio = new Array();
+    for(var i = 0 ; i < dataAxis.length ; i ++ )
+    {
+        var tmp = data1[i]/(data1[i]+data2[i]+data3[i]+data4[i])*100 ;
+        ratio[i] = tmp.toFixed(2) ;
+    }
+
+
+    var options={
+    title : {
+        text: {{ province|safe }}+'按日客车分型通行量统计对比图',
+            left:'center',
+        },
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+    legend: {
+        data:['','','','1型车','2型车','3型车','4型车','1型车占比']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    dataZoom: [{
+        type: 'inside'
+    }, {
+        type: 'slider'
+    }],
+    xAxis : [
+        {
+            type : 'category',
+            data : dataAxis
+            }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            name : '通行量',
+            position: 'left',
+        axisLabel: {
+            formatter: '{value} 车次'
+        }
+        },{
+            type: 'value',
+            name: '占比',
+            position: 'right',
+             min: 0,
+             max: 100,
+            axisLabel: {
+                formatter: '{value} %'
+            }
+        },
+    ],
+    series : [
+        {
+            name:'4型车',
+            type:'bar',
+            stack: '通行量',
+            data:data4
+            },
+        {
+            name:'3型车',
+            type:'bar',
+            stack: '通行量',
+            data:data3
+            },
+        {
+            name:'2型车',
+            type:'bar',
+            stack: '通行量',
+            data:data2
+            },
+        {
+            name:'1型车',
+            type:'bar',
+            stack: '通行量',
+            data:data1
+        },{
+            name: '1型车占比',
+            type: 'line',
+            stack: '占比',
+            yAxisIndex : 1,
+            label: {
+                normal: {
+                    show: true,
+                    position: 'top',
+                }
+            },
+            lineStyle: {
+                normal: {
+                    width: 3,
+                //    shadowColor: 'rgba(0,0,0,0.4)',
+                 //   shadowBlur: 10,
+                  //  shadowOffsetY: 10
+                }
+            },
+            data: ratio, 
+        },
+    ]
+
+    };
+    myChart3.setOption(options);
+</script>
+</html>

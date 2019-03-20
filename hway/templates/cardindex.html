@@ -1,0 +1,331 @@
+﻿{% load static %}
+<!DOCTYPE html,style="height:100%">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>各型客货车通行量占比图</title>
+    <script type="text/javascript" src="{% static 'echarts.js' %}"></script>
+    <script src="{% static 'china.js' %}"></script>
+</head>
+<body style="height:100%;width:100%;margin:0">
+    <div style="height:50%;width:100%">
+        <div id="chart1" style="width:33%;height:100%;float:left"></div>
+        <div id="chart2" style="width:34%;height:100%;float:left"></div>
+        <div id="chart3" style="width:33%;height:100%;float:left"></div>
+    </div>
+    <div style="height:50%;width:100%;text-align:center">
+        <div style="height:100%;width:33%;float:left">
+            <h3 id="title1" style="margin-top:10%"></h3>
+            <table align ="center" style="margin-top:5%" border="1">
+                <tr>
+                    <td>省市区</td>
+                    <td id="proname1"></td>
+                </tr>
+                <tr>
+                    <td>卡存量</td>
+                    <td id="stock1"></td>
+                </tr>
+                <tr>
+                    <td>平均周转周期</td>
+                    <td id="cycle1"></td>
+                </tr>
+                <tr>
+                    <td>周转率</td>
+                    <td id="turnover1"></td>
+                </tr>
+                <tr>
+                    <td>沉淀率</td>
+                    <td id="deposition1"></td>
+                </tr>
+                <tr>
+                    <td>安全库存量(按日调拨)</td>
+                    <td id="safestock1"></td>
+                </tr>
+            </table>
+        </div>
+        <div style="height:100%;width:34%;float:left">
+            <h3 id="title2" style="margin-top:10%"></h3>
+            <table align="center" style="margin-top:5%" border="1">
+                <tr>
+                    <td>省市区</td>
+                    <td id="proname2"></td>
+                </tr>
+                <tr>
+                    <td>卡存量</td>
+                    <td id="stock2"></td>
+                </tr>
+                <tr>
+                    <td>平均周转周期</td>
+                    <td id="cycle2"></td>
+                </tr>
+                <tr>
+                    <td>周转率</td>
+                    <td id="turnover2"></td>
+                </tr>
+                <tr>
+                    <td>沉淀率</td>
+                    <td id="deposition2"></td>
+                </tr>
+                <tr>
+                    <td>安全库存量(按日调拨)</td>
+                    <td id="safestock2"></td>
+                </tr>
+            </table>
+        </div>
+        <div style="height:100%;width:33%;float:left">
+            <h3 id="title3" style="margin-top:10%"></h3>
+            <table align="center" style="margin-top:5%" border="1">
+                <tr>
+                    <td>省市区</td>
+                    <td id="proname3"></td>
+                </tr>
+                <tr>
+                    <td>卡存量</td>
+                    <td id="stock3"></td>
+                </tr>
+                <tr>
+                    <td>平均周转周期</td>
+                    <td id="cycle3"></td>
+                </tr>
+                <tr>
+                    <td>周转率</td>
+                    <td id="turnover3"></td>
+                </tr>
+                <tr>
+                    <td>沉淀率</td>
+                    <td id="deposition3"></td>
+                </tr>
+                <tr>
+                    <td>安全库存量(按日调拨)</td>
+                    <td id="safestock3"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    document.getElementById("proname1").innerHTML = {{ pro1|safe }} ;
+    document.getElementById("proname2").innerHTML = {{ pro2|safe }} ;
+    document.getElementById("proname3").innerHTML = {{ pro3|safe }} ;
+    document.getElementById("title1").innerHTML = {{ pro1|safe }}+'通行卡调拨指标表' ;
+    document.getElementById("title2").innerHTML = {{ pro2|safe }}+'通行卡调拨指标表' ;
+    document.getElementById("title3").innerHTML = {{ pro3|safe }}+'通行卡调拨指标表' ;
+    dat1 = {{ dat1|safe }} ;
+    dat2 = {{ dat2|safe }} ;
+    dat3 = {{ dat3|safe }} ;
+    document.getElementById("stock1").innerHTML = dat1["stock"] ;
+    document.getElementById("stock2").innerHTML = dat2["stock"] ;
+    document.getElementById("stock3").innerHTML = dat3["stock"] ;
+    document.getElementById("cycle1").innerHTML = dat1["cycle"] ;
+    document.getElementById("cycle2").innerHTML = dat2["cycle"] ;
+    document.getElementById("cycle3").innerHTML = dat3["cycle"] ;
+    document.getElementById("turnover1").innerHTML = dat1["turnover"] ;
+    document.getElementById("turnover2").innerHTML = dat2["turnover"] ;
+    document.getElementById("turnover3").innerHTML = dat3["turnover"] ;
+    document.getElementById("deposition1").innerHTML = dat1["deposition"] ;
+    document.getElementById("deposition2").innerHTML = dat2["deposition"] ;
+    document.getElementById("deposition3").innerHTML = dat3["deposition"] ;
+    document.getElementById("safestock1").innerHTML = dat1["safestock"] ;
+    document.getElementById("safestock2").innerHTML = dat2["safestock"] ;
+    document.getElementById("safestock3").innerHTML = dat3["safestock"] ;
+    var dat = {{ cardtrans|safe }} ;
+    /*   var min = data[0]['value'] ;
+       var max = data[0]['value'] ;
+       for(var i = 1 ; i < data.length ; i++)
+       {
+           if(data[i]['value']<min)
+               min = data[i]['value'] ;
+           if(data[i]['value']>max)
+               max = data[i]['value'] ;
+       }*/
+    for(var i = 0 ; i < dat.length ; i++)
+    {
+        for(var j = 0 ; j < dat.length - i-1 ; j++ )
+        {
+            if(dat[j]['value']<dat[j+1]['value'])
+            {
+                var tmp = dat[j] ;
+                dat[j] = dat[j+1] ;
+                dat[j+1] = tmp ;
+            }
+        }
+    }
+    var min = dat[dat.length-1]['value'] ;
+    var max = dat[0]['value'] ;
+    
+  //  var max = 0 ;
+   // var min = 0 ;
+    dom = document.getElementById("chart1");
+    var myChart1 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            show: false,
+            left: 'right',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'0',
+              right: '10',
+              bottom:'10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+              data: dat,
+              // 文本位置修正
+            
+          },
+        ]
+    };
+  
+    if (option && typeof option === "object") {
+        myChart1.setOption(option, true);
+    }
+       myChart1.on('click', function (param) {
+        var name = param.name;
+        if(name!="西藏"&&name!="海南"&&name!="台湾")
+            //alert("../../../../../truckheavycount/"+name+"/"+{{ tp|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }}) ;
+            location.href="../../../"+name+"/"+{{ pro2|safe }}+"/"+{{ pro3|safe }};
+    })
+    
+
+
+    dom = document.getElementById("chart2");
+    var myChart2 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            show:false,
+            left: 'right',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'0',
+              right: '10',
+              bottom:'10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+              data: dat,
+              // 文本位置修正
+            
+          },
+        ]
+    };
+  
+    if (option && typeof option === "object") {
+        myChart2.setOption(option, true);
+    }
+    myChart2.on('click', function (param) {
+        var name = param.name;
+        if(name!="西藏"&&name!="海南"&&name!="台湾")
+            //alert("../../../../../truckheavycount/"+name+"/"+{{ tp|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }}) ;
+            location.href="../../../"+{{ pro1|safe }}+"/"+name+"/"+{{ pro3|safe }} ;
+    })
+
+
+    dom = document.getElementById("chart3");
+    var myChart3 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            show:false,
+            left: 'right',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'0',
+              right: '10',
+              bottom:'10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+               data: dat,
+              // 文本位置修正
+            
+          },
+        ]
+    };
+   // alert({{ fee|safe }}) ;
+    if (option && typeof option === "object") {
+        myChart3.setOption(option, true);
+    }
+
+    myChart3.on('click', function (param) {
+        var name = param.name;
+        if(name!="西藏"&&name!="海南"&&name!="台湾")
+            //alert("../../../../../truckheavycount/"+name+"/"+{{ tp|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }}) ;
+            location.href="../../../"+{{ pro1|safe }}+"/"+{{ pro2|safe }}+"/"+name ;
+    })
+
+</script>
+</html>

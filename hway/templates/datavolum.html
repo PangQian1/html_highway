@@ -1,0 +1,438 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据量</title>
+    <script type="text/javascript" src='{% static 'echarts.min.js' %}'></script>
+</head>
+<body>
+    <style type="text/css">
+        .parentDiv{
+            position: relative;
+        }
+        .div1{
+            position: absolute;
+            z-index: 1;
+        }
+        .div2{
+            position: absolute;
+            z-index: 2;
+        }
+    </style>
+    <div class="parentDiv">
+        <div id="chart" style="width:60%;height:600px; float:left; display:;" class="div2"></div>
+        <div id="chart2" style="width:60%;height:600px; float:left; display:;" class="div1"></div>
+        <div id="chart1" style="width:40%;height:600px; float: right;position: relative;"></div>
+    </div>
+    <div class="parentDiv" style="width: 100px; position: absolute;bottom: 330px">
+        <button id="button" style="width: 100%;height: 40px;" onclick="divShow()" class="div2">数据条数展示</button>
+        <button style="width: 100%;height: 40px;" onclick="divShow()" class="div1">数据总量展示</button>
+    </div>
+</body>
+
+<script type="text/javascript">
+    function divShow(){
+        var div=document.getElementById('chart');
+        var div1=document.getElementById('chart2');
+        var button=document.getElementById('button');
+        if(div.style.display==""){
+            div.style.display="none";
+            button.style.display="none";
+        }else{
+            div.style.display="";
+            button.style.display="";
+        }
+    }
+</script>
+<script type="text/javascript">
+    // 初始化图表标签
+    var myChart = echarts.init(document.getElementById('chart'));
+    var dataETC = [
+        [1,3]
+    ];
+    var dataMTC = [
+        [1,8]
+    ];
+    var dataRepair = [
+        [1,4.5]
+    ];
+    var dataInETC= [
+        [1,2.3]
+    ];
+    var dataInMTC= [
+        [1,4.3]
+    ];
+    var schema = [
+        {name: 'date', index: 0, text: '月'},
+        {name: '数据量', index: 1, text: '数据大小'},
+    ];
+
+    var itemStyle = {
+        normal: {
+            opacity: 0.8,
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowOffsetY: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+    };
+    var options={
+        title : {
+            text: '数据量展示',
+            subtext: '2017年',
+            x:'left'
+        },
+        backgroundColor: '#404a59',
+        color: [
+            '#dd4444', '#fec42c', '#80F1BE','#0000FF','#00BFFF'
+        ],
+        legend: {
+            y: 'top',
+            data: ['ETC出口数据', 'MTC出口数据','业务数据','ETC入口数据','MTC入口数据'],
+            textStyle: {
+                color: '#fff',
+                fontSize: 16
+            }
+        },
+        grid: {
+            x: '10%',
+            x2: 150,
+            y: '18%',
+            y2: '10%'
+        },
+        tooltip: {
+            padding: 10,
+            backgroundColor: '#222',
+            borderColor: '#777',
+            borderWidth: 1,
+            formatter: function (obj) {
+                var value = obj.value;
+                return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                    + obj.seriesName + ' ' + value[0] + '月：'
+                    + '</div>'
+                    + schema[1].text + '：' + value[1] +'G'+ '<br>';
+            }
+        },
+        xAxis: {
+            type: 'value',
+            name: '月份',
+            nameGap: 16,
+            nameTextStyle: {
+                color: '#fff',
+                fontSize: 14
+            },
+            max: 12,
+            splitLine: {
+                show: false
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#eee'
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '数据总量（单位：G）',
+            nameLocation: 'end',
+            nameGap: 20,
+            nameTextStyle: {
+                color: '#fff',
+                fontSize: 16
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#eee'
+                }
+            },
+            splitLine: {
+                show: false
+            }
+        },
+        visualMap: [
+            {
+                left: 'right',
+                top: '10%',
+                dimension: 1,
+                min: 0,
+                max: 30,
+                itemWidth: 30,
+                itemHeight: 120,
+                calculable: true,
+                precision: 0.1,
+                text: ['圆形大小：数据大小'],
+                textGap: 30,
+                textStyle: {
+                    color: '#fff'
+                },
+                inRange: {
+                    symbolSize: [10, 70]
+                },
+                outOfRange: {
+                    symbolSize: [10, 70],
+                    color: ['rgba(255,255,255,.2)']
+                },
+                controller: {
+                    inRange: {
+                        color: ['#c23531']
+                    },
+                    outOfRange: {
+                        color: ['#444']
+                    }
+                }
+            }
+        ],
+        series: [
+            {
+                name: 'ETC出口数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataETC
+            },
+            {
+                name: 'MTC出口数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataMTC
+            },
+            {
+                name: '业务数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataRepair
+            },
+            {
+                name: 'ETC入口数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataInETC
+            },
+            {
+                name: 'MTC入口数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataInMTC
+            },
+        ]
+    };
+    myChart.setOption(options);
+</script>
+
+<script type="text/javascript">
+    // 初始化图表标签
+    var myChart = echarts.init(document.getElementById('chart1'));
+    var options={
+        title: {
+        text: '服务器使用情况',
+        subtext: '服务器'
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    legend: {
+        data: ['使用大小',]
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01]
+    },
+    yAxis: {
+        type: 'category',
+        data: ['存储量']
+    },
+    series: [
+        {
+            name: '使用大小',
+            type: 'bar',
+            data: [22.1]
+        }
+    ]
+    };
+    myChart.setOption(options);
+</script>
+
+<script type="text/javascript">
+    // 初始化图表标签
+    var myChart = echarts.init(document.getElementById('chart2'));
+    var dataETC = [
+        [1,5402038]
+    ];
+    var dataMTC = [
+        [1,20491672]
+    ];
+    var dataRepair = [
+        [1,25893710]
+    ];
+    var dataInETC= [
+        [1,6381757]
+    ];
+    var dataInMTC= [
+        [1,19420986]
+    ];
+    var schema = [
+        {name: 'date', index: 0, text: '月'},
+        {name: '数据条数', index: 1, text: '数据条数'},
+    ];
+
+    var itemStyle = {
+        normal: {
+            opacity: 0.8,
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowOffsetY: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+    };
+    var options={
+        title : {
+            text: '数据条数展示',
+            subtext: '2017年',
+            x:'left'
+        },
+        backgroundColor: '#404a59',
+        color: [
+            '#dd4444', '#fec42c', '#80F1BE','#0000FF','#00BFFF'
+        ],
+        legend: {
+            y: 'top',
+            data: ['ETC出口数据', 'MTC出口数据','业务数据','ETC入口数据','MTC入口数据'],
+            textStyle: {
+                color: '#fff',
+                fontSize: 16
+            }
+        },
+        grid: {
+            x: '10%',
+            x2: 150,
+            y: '18%',
+            y2: '10%'
+        },
+        tooltip: {
+            padding: 10,
+            backgroundColor: '#222',
+            borderColor: '#777',
+            borderWidth: 1,
+            formatter: function (obj) {
+                var value = obj.value;
+                return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                    + obj.seriesName + ' ' + value[0] + '月：'
+                    + '</div>'
+                    + schema[1].text + '：' + value[1] +'条'+ '<br>';
+            }
+        },
+        xAxis: {
+            type: 'value',
+            name: '月份',
+            nameGap: 16,
+            nameTextStyle: {
+                color: '#fff',
+                fontSize: 14
+            },
+            max: 12,
+            splitLine: {
+                show: false
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#eee'
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '数据总条数（单位：条）',
+            nameLocation: 'end',
+            nameGap: 20,
+            nameTextStyle: {
+                color: '#fff',
+                fontSize: 16
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#eee'
+                }
+            },
+            splitLine: {
+                show: false
+            }
+        },
+        visualMap: [
+            {
+                left: 'right',
+                top: '10%',
+                dimension: 1,
+                min: 0,
+                max: 30000000,
+                itemWidth: 30,
+                itemHeight: 120,
+                calculable: true,
+                precision: 0.1,
+                text: ['圆形大小：数据大小'],
+                textGap: 30,
+                textStyle: {
+                    color: '#fff'
+                },
+                inRange: {
+                    symbolSize: [10, 70]
+                },
+                outOfRange: {
+                    symbolSize: [10, 70],
+                    color: ['rgba(255,255,255,.2)']
+                },
+                controller: {
+                    inRange: {
+                        color: ['#c23531']
+                    },
+                    outOfRange: {
+                        color: ['#444']
+                    }
+                }
+            }
+        ],
+        series: [
+            {
+                name: 'ETC出口数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataETC
+            },
+            {
+                name: 'MTC出口数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataMTC
+            },
+            {
+                name: '业务数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataRepair
+            },
+            {
+                name: 'ETC入口数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataInETC
+            },
+            {
+                name: 'MTC入口数据',
+                type: 'scatter',
+                itemStyle: itemStyle,
+                data: dataInMTC
+            },
+        ]
+    };
+    myChart.setOption(options);
+</script>
+
+</html>

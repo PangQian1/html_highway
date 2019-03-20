@@ -1,0 +1,311 @@
+﻿{% load static %}
+<!DOCTYPE html,style="height:100%">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>各型客货车通行量占比图</title>
+    <script type="text/javascript" src="{% static 'echarts.js' %}"></script>
+    <script src="{% static 'china.js' %}"></script>
+</head>
+<body style="height:100%;margin:0">
+    <div style="height: 3%; width: 100%; background-color: #404a59;color:white">
+        &nbsp&nbsp&nbsp&nbsp起始日期:&nbsp&nbsp<input id="start" type="date" value="2018-03-15" min="2018-03-15" max="2018-08-31" onchange="fun2()" />
+        &nbsp&nbsp&nbsp&nbsp结束日期:&nbsp&nbsp<input id="end" type="date" value="2018-03-15" min="2018-03-15" max="2018-08-31" />
+        &nbsp&nbsp&nbsp&nbsp<button type="button" onclick="fun1()">确定</button>
+    </div>
+    <div style="height:47%;width:100%">
+        <div id="chart1" style="width:33%;height:100%;float:left"></div>
+        <div id="chart2" style="width:34%;height:100%;float:left"></div>
+        <div id="chart3" style="width:33%;height:100%;float:left"></div>
+    </div>
+    <div id="chart4" style="width:100%;height:50%"></div>
+</body>
+<script type="text/javascript">
+
+    function fun1(){
+        var st = document.getElementById("start").value;
+        var ed = document.getElementById("end").value;
+        //alert("../../../../../intruckheavycount/"+{{ province|safe }}+"/"+tp+"/"+st+"/"+ed);
+        location.href="../../../../../"+{{ pro1|safe }}+"/"+{{ pro2|safe }}+"/"+{{ pro3|safe }}+"/"+st+"/"+ed;
+    }
+
+    function fun2()
+    {
+        var st = document.getElementById("start") ;
+        var ed = document.getElementById("end");
+        if(st.value>ed.value)
+            ed.value = st.value ;
+        ed.min = st.value ;
+    }
+
+    document.getElementById("start").value = {{ st|safe }} ;
+    document.getElementById("end").value = {{ ed|safe }} ;
+    var dat = {{ fee|safe }} ;
+    /*   var min = data[0]['value'] ;
+       var max = data[0]['value'] ;
+       for(var i = 1 ; i < data.length ; i++)
+       {
+           if(data[i]['value']<min)
+               min = data[i]['value'] ;
+           if(data[i]['value']>max)
+               max = data[i]['value'] ;
+       }*/
+    for(var i = 0 ; i < dat.length ; i++)
+    {
+        for(var j = 0 ; j < dat.length - i-1 ; j++ )
+        {
+            if(dat[j]['value']<dat[j+1]['value'])
+            {
+                var tmp = dat[j] ;
+                dat[j] = dat[j+1] ;
+                dat[j+1] = tmp ;
+            }
+        }
+    }
+    var min = dat[dat.length-1]['value'] ;
+    var max = dat[0]['value'] ;
+
+    dom = document.getElementById("chart1");
+    var myChart1 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            show: false,
+            left: 'right',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'0',
+              right: '10',
+              bottom:'10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+              data: dat,
+              // 文本位置修正
+            
+          },
+        ]
+    };
+  
+    if (option && typeof option === "object") {
+        myChart1.setOption(option, true);
+    }
+       myChart1.on('click', function (param) {
+        var name = param.name;
+        if(name!="西藏"&&name!="海南"&&name!="台湾")
+            //alert("../../../../../truckheavycount/"+name+"/"+{{ tp|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }}) ;
+            location.href="../../../../../"+name+"/"+{{ pro2|safe }}+"/"+{{ pro3|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }};
+    })
+    
+
+
+    dom = document.getElementById("chart2");
+    var myChart2 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            show:false,
+            left: 'right',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'0',
+              right: '10',
+              bottom:'10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+              data: dat,
+              // 文本位置修正
+            
+          },
+        ]
+    };
+  
+    if (option && typeof option === "object") {
+        myChart2.setOption(option, true);
+    }
+    myChart2.on('click', function (param) {
+        var name = param.name;
+        if(name!="西藏"&&name!="海南"&&name!="台湾")
+            //alert("../../../../../truckheavycount/"+name+"/"+{{ tp|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }}) ;
+            location.href="../../../../../"+{{ pro1|safe }}+"/"+name+"/"+{{ pro3|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }};
+    })
+
+
+    dom = document.getElementById("chart3");
+    var myChart3 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            show:false,
+            left: 'right',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'0',
+              right: '10',
+              bottom:'10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+               data: dat,
+              // 文本位置修正
+            
+          },
+        ]
+    };
+   // alert({{ fee|safe }}) ;
+    if (option && typeof option === "object") {
+        myChart3.setOption(option, true);
+    }
+
+    myChart3.on('click', function (param) {
+        var name = param.name;
+        if(name!="西藏"&&name!="海南"&&name!="台湾")
+            //alert("../../../../../truckheavycount/"+name+"/"+{{ tp|safe }}+"/"+{{ st|safe }}+"/"+{{ ed|safe }}) ;
+            location.href="../../../../../"+{{ pro1|safe }}+"/"+{{ pro2|safe }}+"/"+name+"/"+{{ st|safe }}+"/"+{{ ed|safe }};
+    })
+    // 初始化图表标签
+    var myChart4 = echarts.init(document.getElementById('chart4'));
+    var options={
+        title : [{
+            text: {{ pro1|safe }}+'各型客货车交易金额占比图',
+                subtext: '2016.08',
+                left:'12%',
+            },{
+                text: {{ pro2|safe }}+'各型客货车交易金额占比图',
+            subtext: '2016.08',
+            x:'center'
+        },{
+            text: {{ pro3|safe }}+'各型客货车交易金额占比图',
+            subtext: '2016.08',
+            right:'12%',
+        }
+
+    ],
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c}元 ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: ['1型车','2型车','3型车','4型车','11型车','12型车','13型车','14型车','15型车']
+    },
+    series : [
+        {
+            name: '交易金额占比',
+            type: 'pie',
+            radius : '55%',
+            center: ['20%', '60%'],
+            data:{{ data1|safe }},
+                    itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }, {
+            name: '交易金额占比',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '60%'],
+            data: {{ data2|safe }} ,
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }, {
+            name: '交易金额占比',
+            type: 'pie',
+            radius: '55%',
+            center: ['80%', '60%'],
+            data: {{ data3|safe }},
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+    ]
+    };
+    myChart4.setOption(options);
+</script>
+</html>
