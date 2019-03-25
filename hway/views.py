@@ -10,6 +10,7 @@ import time
 from django.db import transaction
 import os
 
+
 def home(request):
     return render(request, 'index.html')
 
@@ -1616,20 +1617,7 @@ def chongqing_od_search(request):
 
 
 def faultRoad_impact(request, pro, linkId, type):
-    #print(linkId + "  " + pro)
-    default_link = {'重庆':'550749', '贵州':'90530885', '北京':'90530885','天津':'90530885','上海':'90530885','宁夏':'90530885',
-                    '新疆':'90530885','内蒙古':'90530885','广西':'90530885','河北':'90530885','山西':'90530885','辽宁':'90530885',
-                    '吉林':'90530885','黑龙江':'90530885','江苏':'90530885','浙江':'90530885','安徽':'90530885','福建':'90530885',
-                    '江西':'90530885','山东':'90530885','河南':'90530885','湖北':'90530885','湖南':'90530885','广东':'90530885',
-                    '四川':'90530885','云南':'90530885','甘肃':'90530885','青海':'90530885',}
-    flag = True
-    data = models.LinkToOD.objects.filter(province = pro, link_id = linkId).values('enstation', 'exstation', 'txl')
-    if (data.count() == 0) and (type == "map"):
-        data = models.LinkToOD.objects.filter(province=pro, link_id=default_link[pro]).values('enstation', 'exstation', 'txl')
-        linkId = default_link[pro]
-    if (data.count() == 0) and (type == "button"):
-        flag = False
-
+    # print(linkId + "  " + pro)
     data = models.Province.objects.all().values('province', 'extrafficvolume')
     tv = []
     for d in data:
@@ -1639,11 +1627,12 @@ def faultRoad_impact(request, pro, linkId, type):
     geo = {}
     for sd in stationdata:
         geo[sd.station_name] = [sd.longi, sd.lati]
-    data = models.LinkToOD.objects.filter(province = pro, link_id = linkId).values('enstation', 'exstation', 'txl')
-    print(linkId + "  " + pro)
-    print(data.count())
-    if data.count() == 0:
-        data = models.LinkToOD.objects.filter(province = '重庆', link_id = linkId).values('enstation', 'exstation', 'txl')
+
+    result = getFaultRoadImpact(pro, linkId, type)
+    data = result['data']
+    flag = result['flag']
+    linkId = result['linkId']
+
     d1 = []
     d2 = []
     d3 = []
@@ -1669,11 +1658,61 @@ def faultRoad_impact(request, pro, linkId, type):
         d2.append({'name': t, 'value': t1[t]})
 
     # return HttpResponse(data)
-    #print(d3)
+    # print(d3)
 
     return render(request, 'faultRoad_impact.html',
                   {'province': json.dumps(pro), 'geo': json.dumps(geo), 'd1': json.dumps(d1), 'd2': json.dumps(d2),
                    'd3': json.dumps(d3), 'tv': json.dumps(tv), 'dl': json.dumps(linkId), 'flag': json.dumps(flag)})
+
+
+def faultRoad_impact_table(request, pro, linkId, type):
+    result = getFaultRoadImpact(pro, linkId, type)
+    data = result['data']
+
+    response = {"status": "ok", 'province' : pro, 'link_id' : linkId,  "data": []}
+    for row in data:
+        response['data'].append(
+            {
+                'enstation': row['enstation'],
+                'exstation': row['exstation'],
+                'txl': row['txl'],
+            }
+        )
+    if type == "ajax":
+        return JsonResponse(response)
+
+    return render(request, 'faultRoad_impact_table.html', response)
+
+
+def getFaultRoadImpact(pro, linkId, type):
+    default_link = {'重庆': '550749', '贵州': '90530885', '北京': '90530885', '天津': '90530885', '上海': '90530885',
+                    '宁夏': '90530885',
+                    '新疆': '90530885', '内蒙古': '90530885', '广西': '90530885', '河北': '90530885', '山西': '90530885',
+                    '辽宁': '90530885',
+                    '吉林': '90530885', '黑龙江': '90530885', '江苏': '90530885', '浙江': '90530885', '安徽': '90530885',
+                    '福建': '90530885',
+                    '江西': '90530885', '山东': '90530885', '河南': '90530885', '湖北': '90530885', '湖南': '90530885',
+                    '广东': '90530885',
+                    '四川': '90530885', '云南': '90530885', '甘肃': '90530885', '青海': '90530885', }
+
+    flag = True
+    data = models.LinkToOD.objects.filter(province = pro, link_id = linkId).values('enstation', 'exstation', 'txl')
+    if (data.count() == 0) and (type == "map"):
+        data = models.LinkToOD.objects.filter(
+            province = pro,
+            link_id = default_link[pro]
+        ).values('enstation', 'exstation', 'txl')
+        linkId = default_link[pro]
+    if (data.count() == 0) and (type == "button"):
+        flag = False
+
+    data = models.LinkToOD.objects.filter(province = pro, link_id = linkId).values('enstation', 'exstation', 'txl')
+    print(linkId + "  " + pro)
+    print(data.count())
+    if data.count() == 0:
+        data = models.LinkToOD.objects.filter(province = '重庆', link_id = linkId).values('enstation', 'exstation', 'txl')
+
+    return {'data': data, 'flag': flag, 'linkId' : linkId}
 
 
 def db_handle(request):
@@ -1692,9 +1731,9 @@ def db_handle(request):
                     odInfo = tmp[1].split(';')  # 包括所有OD信息
                     for item in odInfo:
                         data = item.split(',')
-                        obj = models.LinkToOD(link_id=link, number=data[3], province=data[4],
-                                            enstation=data[0],
-                                            exstation=data[1], txl=int(data[2]))
+                        obj = models.LinkToOD(link_id = link, number = data[3], province = data[4],
+                                              enstation = data[0],
+                                              exstation = data[1], txl = int(data[2]))
                         all_items.append(obj)
     models.IdealTrans.objects.bulk_create(all_items)
 
@@ -2123,5 +2162,3 @@ def db_handle(request):
     #         day = int(date[2])
 
     return HttpResponse("finished!")
-
-

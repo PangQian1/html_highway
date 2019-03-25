@@ -72,4 +72,5 @@ urlpatterns = [
     url(r'^chongqing_od/search', hway_views.chongqing_od_search),
     url(r'^chongqing_od', hway_views.chongqing_od),
     url(r'^faultRoad_impact/(.*)/(.*)/(.*)/$', hway_views.faultRoad_impact),
+    url(r'^faultRoad_impact_table/(.*)/(.*)/(.*)/$', hway_views.faultRoad_impact_table),
 ]
