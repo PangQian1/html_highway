@@ -1683,7 +1683,6 @@ def faultRoad_impact_table(request, pro, linkId, type):
 
     return render(request, 'faultRoad_impact_table.html', response)
 
-
 def getFaultRoadImpact(pro, linkId, type):
     default_link = {'重庆': '550749', '贵州': '90530885', '北京': '90530885', '天津': '90530885', '上海': '90530885',
                     '宁夏': '90530885',
@@ -1713,6 +1712,48 @@ def getFaultRoadImpact(pro, linkId, type):
         data = models.LinkToOD.objects.filter(province = '重庆', link_id = linkId).values('enstation', 'exstation', 'txl')
 
     return {'data': data, 'flag': flag, 'linkId' : linkId}
+
+def travelCoe(request, pro, date, vehType):
+    # print(linkId + "  " + pro)
+    data = models.TravelCoe.objects.filter(date="2019-01-01", vehType="0").values('enSta_id', 'exSta_id', 'travelCoe')
+
+    stationdata = models.CqODLocation.objects.all()
+    geo = {}
+    for sd in stationdata:
+        geo[sd.station_id] = [sd.longi, sd.lati]
+
+    d1 = []
+    for d in data:
+        tmp = []
+        tmp.append({'name': d['enSta_id']})
+        tmp.append({'name': d['exSta_id'], 'value': d['travelCoe']})
+        d1.append(tmp)
+
+    return render(request, 'travelCoe.html',
+                  {'province': json.dumps(pro), 'geo': json.dumps(geo), 'd1': json.dumps(d1)})
+
+    #print(linkId + "  " + pro)
+
+    #
+    # stationdata = models.ZhangXingTong.objects.filter(province = pro)
+    # geo = {}
+    # for sd in stationdata:
+    #     geo[sd.station_name] = [sd.longi, sd.lati]
+    #
+    # data = models.LinkToOD.objects.filter(province=pro, link_id=linkId).values('enstation', 'exstation', 'txl')
+    #
+    # d1 = []
+    #
+    # for d in data:
+    #     tmp = []
+    #     tmp.append({'name': d['enstation']})
+    #     tmp.append({'name': d['exstation'], 'value': d['txl']})
+    #     d1.append(tmp)
+    #
+    # return render(request, 'travelCoe.html',
+    #               {'province': json.dumps(pro), 'geo': json.dumps(geo), 'd1': json.dumps(d1)})
+
+
 
 
 def db_handle(request):

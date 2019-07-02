@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html style="height:100%;width:100%">
+<head>
+
+    <meta charset="utf-8">
+
+    <title>ECharts</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+
+<body style="height:100%;width:100%;margin:0">
+
+<div style="height:100%; width: 100%; float: left;background-color: #404a59;color:white">
+    <div style="height: 3%; width: 100%; background-color: #404a59;margin-left: 2%">
+        &nbsp&nbsp&nbsp&nbsp日期:&nbsp&nbsp<input id="start" type="date" value="2019-01-01" min="2016-01-01" max="2019-03-31" onchange="fun2()" />
+        &nbsp&nbsp车型:&nbsp&nbsp
+        <select name="aabb" id="aabb">
+            <option value="0" selected="selected">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+        </select>
+        &nbsp&nbsp<button type="button" class="btn btn-default" style="white-space:nowrap" id="table">确定</button>
+    </div>
+    <div id="container1" style="height:97%;width:100%;float:left"></div>
+</div>
+
+<!-- ECharts单文件引入 -->
+<script type="text/javascript" src="{% static 'echarts.js' %}"></script>
+<script src="{% static 'china.js' %}"></script>
+<script src="{% static 'province/anhui.js' %}"></script>
+<script src="{% static 'province/beijing.js' %}"></script>
+<script src="{% static 'province/chongqing.js' %}"></script>
+<script src="{% static 'province/fujian.js' %}"></script>
+<script src="{% static 'province/gansu.js' %}"></script>
+<script src="{% static 'province/guangdong.js' %}"></script>
+<script src="{% static 'province/guangxi.js' %}"></script>
+<script src="{% static 'province/guizhou.js' %}"></script>
+<script src="{% static 'province/hainan.js' %}"></script>
+<script src="{% static 'province/hebei.js' %}"></script>
+<script src="{% static 'province/heilongjiang.js' %}"></script>
+<script src="{% static 'province/henan.js' %}"></script>
+<script src="{% static 'province/hubei.js' %}"></script>
+<script src="{% static 'province/hunan.js' %}"></script>
+<script src="{% static 'province/jiangsu.js' %}"></script>
+<script src="{% static 'province/jiangxi.js' %}"></script>
+<script src="{% static 'province/jilin.js' %}"></script>
+<script src="{% static 'province/liaoning.js' %}"></script>
+<script src="{% static 'province/neimenggu.js' %}"></script>
+<script src="{% static 'province/ningxia.js' %}"></script>
+<script src="{% static 'province/qinghai.js' %}"></script>
+<script src="{% static 'province/shandong.js' %}"></script>
+<script src="{% static 'province/shanghai.js' %}"></script>
+<script src="{% static 'province/shanxi.js' %}"></script>
+<script src="{% static 'province/shanxi1.js' %}"></script>
+<script src="{% static 'province/sichuan.js' %}"></script>
+<script src="{% static 'province/tianjin.js' %}"></script>
+<script src="{% static 'province/xinjiang.js' %}"></script>
+<script src="{% static 'province/xizang.js' %}"></script>
+<script src="{% static 'province/yunnan.js' %}"></script>
+<script src="{% static 'province/zhejiang.js' %}"></script>
+
+<script type="text/javascript">
+
+
+    var dom = document.getElementById("container1");
+    var myChart = echarts.init(dom);
+    var app = {};
+    var option = null;
+    var geoCoordMap = {{ geo|safe }};
+
+    var data = {{ d1|safe }};
+
+    var convertData = function (data) {
+
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+            var dataItem = data[i];
+            console.log(dataItem);
+            var fromCoord = geoCoordMap[dataItem[0].name];
+            var toCoord = geoCoordMap[dataItem[1].name];
+            if (fromCoord && toCoord) {
+                res.push({
+                    fromName: dataItem[0].name,
+                    toName: dataItem[1].name,
+                    coords: [fromCoord, toCoord],
+                    value: dataItem[1].value,
+                });
+            }
+        }
+        return res;
+    };
+
+    //用以将rgb转为16进制颜色
+    function byte2Hex(n){
+        var nybHexString = "0123456789ABCDEF";
+        return String(nybHexString.substr((n >> 4) & 0x0F,1)) + nybHexString.substr(n & 0x0F,1);
+    }
+    var minv = 30;
+    var maxv = 60;
+
+    option = {
+        backgroundColor: '#404a59',
+        title: {
+            text: {{ province|safe }}+'出行系数',
+            left: 'center',
+            textStyle: {
+                color: '#fff'
+            }
+        },
+        geo: {
+            map: {{ province|safe }},
+            label: {
+                emphasis: {
+                    show: false
+                }
+            },
+            roam: true,
+            itemStyle: {
+                normal: {
+                    areaColor: '#323c48',
+                    borderColor: '#404a59'
+                },
+                emphasis: {
+                    areaColor: '#2a333d'
+                }
+            }
+        },
+        series: [
+            {
+                name: '货运通道',
+                type: 'lines',
+                zlevel: 1,
+                effect: {
+                    show: true,
+                    period: 6,
+                    trailLength: 0.7,
+                    color: '#fff',
+                    symbolSize: 3
+                },
+                lineStyle: {
+                    normal: {
+                        color: function(dt){
+                             var value = dt.data['value'];
+                             var res = (value-minv)/(maxv-minv);
+
+                             var r = 0 ;
+                             var g = 0 ;
+                             var b = 0 ;
+                             if(res < 0.5)
+                             {
+                                 r = 255 * res ;
+                                 g = 255 ;
+                                 b = 0 ;
+                             }
+                             else
+                             {
+                                 r = 255 ;
+                                 g = 255 - 255 * res ;
+                                 b = 0 ;
+                             }
+
+                            return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
+                        },
+                        width: 0,
+                        curveness: 0.2
+                    }
+                },
+                data: convertData(data)
+            }, {
+                name: '货运通道',
+                type: 'lines',
+                zlevel: 2,
+                symbol: ['none', 'arrow'],
+                symbolSize: 2,
+                effect: {
+                    show: true,
+                    period: 6,
+                    trailLength: 0,
+                    symbolSize: 2
+                },
+                lineStyle: {
+                    normal: {
+                       color: function(dt){
+                           //console.log(dt);
+                           var value = dt.data['value'];
+                           console.log(value);
+                           var res = (value-minv)/(maxv-minv);
+                           var r = 0 ;
+                           var g = 0 ;
+                           var b = 0 ;
+                           if(res < 0.5)
+                           {
+                               r = 255 * res ;
+                               g = 255 ;
+                               b = 0 ;
+                           }
+                           else
+                           {
+                               r = 255 ;
+                               g = 255 - 255 * res ;
+                               b = 0 ;
+                           }
+                           console.log(r +" "+ g +" "+ b);
+                           return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
+                        },
+                        width: 3,
+                        opacity: 0.6,
+                        curveness: 0.2
+                    }
+                },
+                data: convertData(data)
+            }
+        ]
+    };
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+
+    $("#search").click(
+        function () {
+            var link_id = $("#keyword").val();
+            var name = {{ province|safe }};
+
+            if (link_id) {
+                location.href = "../../../" + name + "/" + $("#keyword").val() + "/" + "button";
+            } else {
+                alert("输入不能为空！");
+            }
+        }
+    );
+
+    $("#table").click(
+        function () {
+            link_id = $("#keyword").val();
+            var name = {{ province|safe }};
+
+            if (link_id) {
+                location.href = "../../../../faultRoad_impact_table/" + name + "/" + link_id + "/" + "button";
+            } else {
+                alert("输入不能为空！");
+            }
+        }
+    );
+</script>
+</body>
+</html>

@@ -267,6 +267,20 @@ class ZhangXingTong(models.Model):
     longi = models.FloatField()
     lati = models.FloatField()
 
+
+class TravelCoe(models.Model):
+    enSta_id = models.CharField(max_length=20)
+    exSta_id = models.CharField(max_length=20)
+    date = models.DateField()
+    vehType = models.IntegerField()
+    txl = models.BigIntegerField(default=0)
+    travelCoe = models.FloatField()
+
+class CqODLocation(models.Model):
+    station_id = models.CharField(max_length=20)
+    longi = models.FloatField()
+    lati = models.FloatField()
+
 # class Chongqing_od(models.Model):
 #     link_id = models.IntegerField()
 #     toll = models.TextField()
