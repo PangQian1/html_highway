@@ -13,10 +13,10 @@
 
 <div style="height:100%; width: 100%; float: left;background-color: #404a59;color:white">
     <div style="height: 3%; width: 100%; background-color: #404a59;margin-left: 2%">
-        &nbsp&nbsp&nbsp&nbsp日期:&nbsp&nbsp<input id="start" type="date" value="2019-01-01" min="2016-01-01" max="2019-03-31" onchange="fun2()" />
+        &nbsp&nbsp&nbsp&nbsp日期:&nbsp&nbsp<input id="date" type="date" value="2019-01-01" min="2016-01-01" max="2019-03-31" onchange="fun2()" />
         &nbsp&nbsp车型:&nbsp&nbsp
-        <select name="aabb" id="aabb">
-            <option value="0" selected="selected">0</option>
+        <select name="aabb" id="vehType">
+            <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -24,7 +24,7 @@
             <option value="5">5</option>
             <option value="6">6</option>
         </select>
-        &nbsp&nbsp<button type="button" class="btn btn-default" style="white-space:nowrap" id="table">确定</button>
+        &nbsp&nbsp<button type="button" class="btn btn-default" style="white-space:nowrap" id="search">确定</button>
     </div>
     <div id="container1" style="height:97%;width:100%;float:left"></div>
 </div>
@@ -65,7 +65,8 @@
 <script src="{% static 'province/zhejiang.js' %}"></script>
 
 <script type="text/javascript">
-
+    $("#date").val({{ time|safe }});
+    $("#vehType").val({{ vehType|safe }});
 
     var dom = document.getElementById("container1");
     var myChart = echarts.init(dom);
@@ -100,6 +101,29 @@
         var nybHexString = "0123456789ABCDEF";
         return String(nybHexString.substr((n >> 4) & 0x0F,1)) + nybHexString.substr(n & 0x0F,1);
     }
+
+
+    //获取真实车型
+    function getVehType(vehCode) {
+        if(vehCode == "0"){
+            return '小客车';
+        }else if(vehCode == "1"){
+            return '大中型客车';
+        }else if(vehCode == "2"){
+            return '1型货车';
+        }else if(vehCode == "3"){
+            return '2型货车';
+        }else if(vehCode == "4"){
+            return '3型货车';
+        }else if(vehCode == "5"){
+            return '4型货车';
+        }else if(vehCode == "6"){
+            return '5型货车';
+        }
+    }
+
+    var chexing = getVehType({{ vehType|safe }});
+
     var minv = 30;
     var maxv = 60;
 
@@ -107,6 +131,7 @@
         backgroundColor: '#404a59',
         title: {
             text: {{ province|safe }}+'出行系数',
+            subtext:{{ time|safe }} + "  " + chexing,
             left: 'center',
             textStyle: {
                 color: '#fff'
@@ -223,29 +248,14 @@
 
     $("#search").click(
         function () {
-            var link_id = $("#keyword").val();
+            var date = $("#date").val();
+            var vehType = $("#vehType").val();
             var name = {{ province|safe }};
 
-            if (link_id) {
-                location.href = "../../../" + name + "/" + $("#keyword").val() + "/" + "button";
-            } else {
-                alert("输入不能为空！");
-            }
+            location.href = "../../../" + name + "/" + date + "/" + vehType;
         }
     );
 
-    $("#table").click(
-        function () {
-            link_id = $("#keyword").val();
-            var name = {{ province|safe }};
-
-            if (link_id) {
-                location.href = "../../../../faultRoad_impact_table/" + name + "/" + link_id + "/" + "button";
-            } else {
-                alert("输入不能为空！");
-            }
-        }
-    );
 </script>
 </body>
 </html>

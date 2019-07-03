@@ -4,7 +4,8 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from hway import models
 import json
-from datetime import datetime
+from datetime import datetime,timedelta
+#import datetime
 import time
 # Create your views here.
 from django.db import transaction
@@ -1713,9 +1714,10 @@ def getFaultRoadImpact(pro, linkId, type):
 
     return {'data': data, 'flag': flag, 'linkId' : linkId}
 
-def travelCoe(request, pro, date, vehType):
+
+def travelCoe(request, pro, time, vehType):
     # print(linkId + "  " + pro)
-    data = models.TravelCoe.objects.filter(date="2019-01-01", vehType="0").values('enSta_id', 'exSta_id', 'travelCoe')
+    data = models.TravelCoe.objects.filter(date=time, vehType=vehType).values('enSta_id', 'exSta_id', 'travelCoe')
 
     stationdata = models.CqODLocation.objects.all()
     geo = {}
@@ -1730,7 +1732,59 @@ def travelCoe(request, pro, date, vehType):
         d1.append(tmp)
 
     return render(request, 'travelCoe.html',
-                  {'province': json.dumps(pro), 'geo': json.dumps(geo), 'd1': json.dumps(d1)})
+                  {'province': json.dumps(pro), 'geo': json.dumps(geo), 'd1': json.dumps(d1),
+                   'time': json.dumps(time), 'vehType': json.dumps(vehType)})
+
+def getDataByType(vehType):
+    en_id = '1620'
+    ex_id = '1704'
+    st = '2018-07-01'
+    ed = '2018-12-31'
+
+    stime = st.split('-')
+    etime = ed.split('-')
+
+    res = {'07': [], '08': [], '09': [], '10': [], '11': [], '12': []}
+    data = models.TravelCoe.objects.filter(vehType=vehType, enSta_id=en_id, exSta_id=ex_id,
+                                            date__gte=datetime(int(stime[0]), int(stime[1]), int(stime[2])),
+                                            date__lte=datetime(int(etime[0]), int(etime[1]), int(etime[2])))\
+                                    .values('date', 'travelCoe').order_by('date')
+
+    startDate = datetime.date(datetime.strptime(st, '%Y-%m-%d'))
+    #startDate = '2018-07-01'
+    # startTime = datetime.strptime(startDate, '%Y-%m-%d')  #datetime.datetime格式
+    # n = datetime.date(startTime)   #datetime.date 格式，和data['date']格式一致
+    # tomorrow = n + timedelta(days=1)
+    # print(tomorrow)
+
+    for d in data:
+        mon = str(startDate).split('-')[1]
+        if (str(startDate) == str(d['date'])):
+            res[mon].append(d['travelCoe'])
+        else:
+            res[mon].append('0')
+
+        startDate = startDate + timedelta(days=1)
+
+    return res
+
+def travelCoeByWeek(request, pro, time, vehType):
+    d0 = getDataByType('0')
+    d1 = getDataByType('1')
+    d2 = getDataByType('2')
+    d3 = getDataByType('3')
+    d4 = getDataByType('4')
+    d5 = getDataByType('5')
+    d6 = getDataByType('6')
+
+    # print(d0)
+    # return render(request, 'travelCoeByWeek.html')
+    return render(request, 'travelCoeByWeek.html',
+                  {'d0': json.dumps(d0), 'd1': json.dumps(d1), 'd2': json.dumps(d2),
+                   'd3': json.dumps(d3), 'd4': json.dumps(d4), 'd5': json.dumps(d5), 'd6': json.dumps(d6)})
+
+def travelCoeByWeek01(request):
+    return render(request, 'travelCoeByWeek01.html')
 
     #print(linkId + "  " + pro)
 
