@@ -74,6 +74,5 @@ urlpatterns = [
     url(r'^faultRoad_impact/(.*)/(.*)/(.*)/$', hway_views.faultRoad_impact),
     url(r'^faultRoad_impact_table/(.*)/(.*)/(.*)/$', hway_views.faultRoad_impact_table),#(.*)代表参数的数量
     url(r'^travelCoe/(.*)/(.*)/(.*)/$', hway_views.travelCoe),
-    url(r'^travelCoeByWeek/(.*)/(.*)/(.*)/$', hway_views.travelCoeByWeek),
-    url(r'^travelCoeByWeek01/$', hway_views.travelCoeByWeek01),
+    url(r'^travelCoeByWeek/(.*)/$', hway_views.travelCoeByWeek),
 ]
