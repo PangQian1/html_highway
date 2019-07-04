@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6599a93-c2ed-4e23-a328-c757ce3a7f19" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/hway/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/hway/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hway/templates/travelCoeByWeek.html" beforeDir="false" afterPath="$PROJECT_DIR$/hway/templates/travelCoeByWeek.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hway/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/hway/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hway/templates/travelCoe.html" beforeDir="false" afterPath="$PROJECT_DIR$/hway/templates/travelCoe.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -57,25 +55,25 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="html" value="15" />
+          <entry key="html" value="17" />
           <entry key="py" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="15" />
+          <entry key="HTML" value="17" />
           <entry key="Python" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="2405" />
+          <entry key="html" value="2478" />
           <entry key="py" value="3166" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="2405" />
+          <entry key="HTML" value="2478" />
           <entry key="Python" value="3166" />
         </counts>
       </usages-collector>
@@ -86,17 +84,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/hway/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
+            <state relative-caret-position="1251">
               <caret line="206" column="78" selection-start-line="206" selection-start-column="78" selection-end-line="206" selection-end-column="78" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hway/templates/etcmtcdaytranscount.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="205">
+              <caret line="72" column="12" lean-forward="true" selection-start-line="72" selection-start-column="12" selection-end-line="72" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/hway/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
-              <caret line="1731" column="22" lean-forward="true" selection-start-line="1731" selection-start-column="22" selection-end-line="1731" selection-end-column="22" />
+            <state relative-caret-position="-343">
+              <caret line="1743" lean-forward="true" selection-start-line="1743" selection-end-line="1743" />
               <folding>
                 <element signature="e#15#50#0" expanded="true" />
                 <marker date="1562243539787" expanded="true" signature="73661:73666" ph="..." />
@@ -107,11 +114,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hway/templates/travelCoeByWeek.html">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/hway/templates/travelCoe.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2432">
-              <caret line="128" column="31" selection-start-line="128" selection-start-column="31" selection-end-line="128" selection-end-column="31" />
+            <state relative-caret-position="456">
+              <caret line="28" column="51" selection-start-line="28" selection-start-column="51" selection-end-line="28" selection-end-column="51" />
             </state>
           </provider>
         </entry>
@@ -178,7 +185,6 @@
         <option value="$PROJECT_DIR$/hway/templates/faultRoad_impact.html" />
         <option value="$PROJECT_DIR$/hway/templates/travelcoe.html" />
         <option value="$PROJECT_DIR$/hway/models.py" />
-        <option value="$PROJECT_DIR$/hway/templates/travelCoe.html" />
         <option value="$PROJECT_DIR$/hway/templates/etcmtcdaytranscount.html" />
         <option value="$PROJECT_DIR$/highway/test.py" />
         <option value="$PROJECT_DIR$/hway/templates/travelCoeByWeek01.html" />
@@ -187,6 +193,7 @@
         <option value="$PROJECT_DIR$/hway/templates/index.html" />
         <option value="$PROJECT_DIR$/hway/templates/travelCoeByWeek.html" />
         <option value="$PROJECT_DIR$/hway/views.py" />
+        <option value="$PROJECT_DIR$/hway/templates/travelCoe.html" />
       </list>
     </option>
   </component>
@@ -227,6 +234,12 @@
               <item name="html_highway" type="b2602c69:ProjectViewProjectNode" />
               <item name="html_highway" type="462c0819:PsiDirectoryNode" />
               <item name="hway" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="html_highway" type="b2602c69:ProjectViewProjectNode" />
+              <item name="html_highway" type="462c0819:PsiDirectoryNode" />
+              <item name="hway" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -385,7 +398,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12801608" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15013404" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -399,7 +412,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" weight="0.40992907" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.13758865" />
+      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.10638298" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.3929078" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -602,21 +615,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/hway/templates/travelCoeByWeek01.html" />
-    <entry file="file://$PROJECT_DIR$/hway/templates/etcmtcdaytranscount.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1444">
-          <caret line="76" column="21" selection-start-line="76" selection-start-column="16" selection-end-line="76" selection-end-column="21" />
-          <folding>
-            <element signature="n#style#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/highway/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1406">
@@ -627,24 +625,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hway/templates/travelCoe.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1273">
-          <caret line="67" column="3" selection-start-line="67" selection-start-column="3" selection-end-line="67" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/import.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="538">
           <caret line="92" column="13" selection-start-line="92" selection-start-column="13" selection-end-line="92" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hway/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="206" column="78" selection-start-line="206" selection-start-column="78" selection-end-line="206" selection-end-column="78" />
         </state>
       </provider>
     </entry>
@@ -657,14 +641,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/hway/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="1731" column="22" lean-forward="true" selection-start-line="1731" selection-start-column="22" selection-end-line="1731" selection-end-column="22" />
+        <state relative-caret-position="-343">
+          <caret line="1743" lean-forward="true" selection-start-line="1743" selection-end-line="1743" />
           <folding>
             <element signature="e#15#50#0" expanded="true" />
             <marker date="1562243539787" expanded="true" signature="73661:73666" ph="..." />
             <marker date="1562243539787" expanded="true" signature="74354:75958" ph="..." />
             <marker date="1562243539787" expanded="false" signature="76549:76554" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hway/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1251">
+          <caret line="206" column="78" selection-start-line="206" selection-start-column="78" selection-end-line="206" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hway/templates/etcmtcdaytranscount.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="72" column="12" lean-forward="true" selection-start-line="72" selection-start-column="12" selection-end-line="72" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hway/templates/travelCoe.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="28" column="51" selection-start-line="28" selection-start-column="51" selection-end-line="28" selection-end-column="51" />
         </state>
       </provider>
     </entry>
