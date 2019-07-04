@@ -1740,14 +1740,19 @@ def getDataByType(vehType, period):
     ex_id = '1704'
     st = period.split(',')[0]
     ed = period.split(',')[1]
+    print(st + ' ' + ed)
 
     stime = st.split('-')
     etime = ed.split('-')
 
     if(st[5:7] == '01'):
-        res = {'01': [], '02': [], '03': [], '04': [], '05': [], '06': []}
+        res = {'01': [], '02': [], '03': [],}
+    elif(st[5:7] == '04'):
+        res = {'04': [], '05': [], '06': []}
+    elif(st[5:7] == '07'):
+        res = {'07': [], '08': [], '09': []}
     else:
-        res = {'07': [], '08': [], '09': [], '10': [], '11': [], '12': []}
+        res = {'10': [], '11': [], '12': []}
 
     data = models.TravelCoe.objects.filter(vehType=vehType, enSta_id=en_id, exSta_id=ex_id,
                                             date__gte=datetime(int(stime[0]), int(stime[1]), int(stime[2])),
@@ -1760,16 +1765,14 @@ def getDataByType(vehType, period):
     # n = datetime.date(startTime)   #datetime.date 格式，和data['date']格式一致
     # tomorrow = n + timedelta(days=1)
     # print(tomorrow)
-    print(data)
+
     for d in data:
         mon = str(startDate).split('-')[1]
         while(True):
             if (str(startDate) == str(d['date'])):
                 res[mon].append(d['travelCoe'])
                 startDate = startDate + timedelta(days=1)
-                print(str(startDate) + ' ' + str(d) + ' ' + vehType)
                 break
-            print('         '+str(startDate) + ' ' + str(d) + ' ' + vehType)
             res[mon].append('0')
             startDate = startDate + timedelta(days=1)
             mon = str(startDate).split('-')[1]

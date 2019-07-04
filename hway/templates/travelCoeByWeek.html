@@ -13,16 +13,23 @@
 
 <div style="height:100%; width: 100%; float: left;">
     <div style="height: 3%; width: 100%;margin-left: 2%">
-        &nbsp&nbsp&nbsp&nbsp日期:&nbsp&nbsp<input id="date" type="date" value="2019-01-01" min="2016-01-01" max="2019-03-31" onchange="fun2()" />
+{#        &nbsp&nbsp&nbsp&nbsp日期:&nbsp&nbsp<input id="date" type="date" value="2019-01-01" min="2016-01-01" max="2019-03-31" onchange="fun2()" />#}
+{#        #}
         &nbsp&nbsp时间段:&nbsp&nbsp
         <select name="aabb" id="period">
-            <option value="2016-01-01,2016-06-30">2016年-上</option>
-            <option value="2016-07-01,2016-12-31">2016年-下</option>
-            <option value="2017-01-01,2017-06-30">2017年-上</option>
-            <option value="2017-07-01,2017-12-31">2017年-下</option>
-            <option value="2018-01-01,2018-06-30">2018年-上</option>
-            <option value="2018-07-01,2018-12-31">2018年-下</option>
-            <option value="2019-01-01,2019-03-31">2019年-上</option>
+            <option value="2016-01-01,2016-03-31">2016年-1</option>
+            <option value="2016-04-01,2016-06-30">2016年-2</option>
+            <option value="2016-07-01,2016-09-30">2016年-3</option>
+            <option value="2016-10-01,2016-12-31">2016年-4</option>
+            <option value="2017-01-01,2017-03-31">2017年-1</option>
+            <option value="2017-04-01,2017-06-30">2017年-2</option>
+            <option value="2017-07-01,2017-09-30">2017年-3</option>
+            <option value="2017-10-01,2017-12-31">2017年-4</option>
+            <option value="2018-01-01,2018-03-31">2018年-1</option>
+            <option value="2018-04-01,2018-06-30">2018年-2</option>
+            <option value="2018-07-01,2018-09-30">2018年-3</option>
+            <option value="2018-10-01,2018-12-31">2018年-4</option>
+            <option value="2019-01-01,2019-03-31">2019年-1</option>
         </select>
         &nbsp&nbsp<button type="button" class="btn btn-default" style="white-space:nowrap" id="search">确定</button>
     </div>
@@ -83,7 +90,7 @@
         console.log(obj);
         var pList = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'];
         var temp;
-        for (var month = curMon; month <= (curMon+5); month++) {
+        for (var month = curMon; month <= (curMon+2); month++) {
             var max = 0;
             var sum = 0;
             temp = obj[addPreZero(month)];
@@ -119,13 +126,12 @@
                 // loop: false,
                 autoPlay: true,
                 // currentIndex: 2,
-                playInterval: 1000,
+                playInterval: 2000,
                 // controlStyle: {
                 //     position: 'left'
                 // },
                 data: [
                     addPreZero(curMon),addPreZero(curMon+1),addPreZero(curMon+2),
-                    addPreZero(curMon+3),addPreZero(curMon+4),addPreZero(curMon+5),
                 ],
                 label: {
                        formatter : function(s) {
@@ -213,42 +219,6 @@
                     {data: dataMap.d4[addPreZero(curMon+2)]},
                     {data: dataMap.d5[addPreZero(curMon+2)]},
                     {data: dataMap.d6[addPreZero(curMon+2)]},
-                ]
-            },
-            {
-                title : {text: curYear + '-' + addPreZero(curMon+3) + '出行系数分布'},
-                series : [
-                    {data: dataMap.d0[addPreZero(curMon+3)]},
-                    {data: dataMap.d1[addPreZero(curMon+3)]},
-                    {data: dataMap.d2[addPreZero(curMon+3)]},
-                    {data: dataMap.d3[addPreZero(curMon+3)]},
-                    {data: dataMap.d4[addPreZero(curMon+3)]},
-                    {data: dataMap.d5[addPreZero(curMon+3)]},
-                    {data: dataMap.d6[addPreZero(curMon+3)]},
-                ]
-            },
-            {
-                title : {text: curYear + '-' + addPreZero(curMon+4) + '出行系数分布'},
-                series : [
-                    {data: dataMap.d0[addPreZero(curMon+4)]},
-                    {data: dataMap.d1[addPreZero(curMon+4)]},
-                    {data: dataMap.d2[addPreZero(curMon+4)]},
-                    {data: dataMap.d3[addPreZero(curMon+4)]},
-                    {data: dataMap.d4[addPreZero(curMon+4)]},
-                    {data: dataMap.d5[addPreZero(curMon+4)]},
-                    {data: dataMap.d6[addPreZero(curMon+4)]},
-                ]
-            },
-            {
-                title : {text: curYear + '-' + addPreZero(curMon+5) + '出行系数分布'},
-                series : [
-                    {data: dataMap.d0[addPreZero(curMon+5)]},
-                    {data: dataMap.d1[addPreZero(curMon+5)]},
-                    {data: dataMap.d2[addPreZero(curMon+5)]},
-                    {data: dataMap.d3[addPreZero(curMon+5)]},
-                    {data: dataMap.d4[addPreZero(curMon+5)]},
-                    {data: dataMap.d5[addPreZero(curMon+5)]},
-                    {data: dataMap.d6[addPreZero(curMon+5)]},
                 ]
             },
         ]
