@@ -70,7 +70,7 @@
 
     var dom = document.getElementById("container1");
     var myChart = echarts.init(dom);
-    var app = {};
+
     var option = null;
     var geoCoordMap = {{ geo|safe }};
 
@@ -140,6 +140,8 @@
             left: 'right',
             min: 20,
             max: 70,
+            minOpen:true,
+            maxOpen:true,
             calculable: true,
             inRange: {
                 color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
@@ -179,7 +181,7 @@
                 },
                 lineStyle: {
                     normal: {
-                        color: function(dt){
+                        {% comment %}color: function(dt){
                              var value = dt.data['value'];
                              var res = (value-minv)/(maxv-minv);
 
@@ -200,7 +202,7 @@
                              }
 
                             return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
-                        },
+                        },{% endcomment %}
                         width: 0,
                         curveness: 0.2
                     }
@@ -220,10 +222,10 @@
                 },
                 lineStyle: {
                     normal: {
-                       color: function(dt){
+{% comment %}                       color: function(dt){
                            //console.log(dt);
                            var value = dt.data['value'];
-                           console.log(value);
+                           //console.log(value);
                            var res = (value-minv)/(maxv-minv);
                            var r = 0 ;
                            var g = 0 ;
@@ -240,9 +242,9 @@
                                g = 255 - 255 * res ;
                                b = 0 ;
                            }
-                           console.log(r +" "+ g +" "+ b);
+                           //console.log(r +" "+ g +" "+ b);
                            return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
-                        },
+                        },{% endcomment %}
                         width: 3,
                         opacity: 0.6,
                         curveness: 0.2

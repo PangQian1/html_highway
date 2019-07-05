@@ -1740,7 +1740,7 @@ def getDataByType(vehType, period):
     ex_id = '1704'
     st = period.split(',')[0]
     ed = period.split(',')[1]
-    print(st + ' ' + ed)
+    #print(st + ' ' + ed)
 
     stime = st.split('-')
     etime = ed.split('-')
