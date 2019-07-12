@@ -7,13 +7,14 @@
 
     <title>ECharts</title>
     <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
 </head>
 
 <body style="height:100%;width:100%;margin:0;background-color: #404a59">
 
 <div style="height:100%; width: 100%; float: left;color:white">
     <div style="height: 3%; width: 100%;margin-left: 2%">
-        &nbsp&nbsp&nbsp&nbsp日期:&nbsp&nbsp<input id="date" type="date" value="2019-01-01" min="2016-01-01" max="2019-03-31" onchange="fun2()" />
+        &nbsp&nbsp&nbsp&nbsp日期:&nbsp&nbsp<input id="date" type="month" value="2019-01" min="2016-01" max="2019-03" />
         &nbsp&nbsp车型:&nbsp&nbsp
         <select name="aabb" id="vehType">
             <option value="0">0</option>
@@ -65,6 +66,8 @@
 <script src="{% static 'province/zhejiang.js' %}"></script>
 
 <script type="text/javascript">
+    $("#date").val({{ time|safe }});
+    $("#vehType").val({{ vehType|safe }});
 
     var dom = document.getElementById("container1");
     var myChart = echarts.init(dom);
@@ -73,7 +76,9 @@
     var geoCoordMap = {{ geo|safe }};
 
     var data = {{ dt|safe }};
-    var data0 = {{ d0|safe }};
+    var days = {{ days|safe }};
+    var chexing = {{ vehType|safe }};
+    var time = {{ time|safe }};
 
     var convertData = function (data) {
         //console.log(data);
@@ -81,7 +86,6 @@
         var res = [];
         for (var i = 0; i < data.length; i++) {
             var dataItem = data[i];
-            //console.log(dataItem);
             var fromCoord = geoCoordMap[dataItem[0].name];
             var toCoord = geoCoordMap[dataItem[1].name];
             if (fromCoord && toCoord) {
@@ -104,6 +108,24 @@
         return ('000000000'+num).slice(-2);
     }
 
+        //获取真实车型
+    function getVehType(vehCode) {
+        if(vehCode == "0"){
+            return '小客车';
+        }else if(vehCode == "1"){
+            return '大中型客车';
+        }else if(vehCode == "2"){
+            return '1型货车';
+        }else if(vehCode == "3"){
+            return '2型货车';
+        }else if(vehCode == "4"){
+            return '3型货车';
+        }else if(vehCode == "5"){
+            return '4型货车';
+        }else if(vehCode == "6"){
+            return '5型货车';
+        }
+    }
 
     option = {
         baseOption: {
@@ -118,19 +140,23 @@
                 // controlStyle: {
                 //     position: 'left'
                 // },
-                data: [
-                    '01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'//即下方动态变化文字说明
-                ],
+                data: [],
+                emphasis:{
+                  label:{
+                      color:'#fff'
+                  }
+                },
                 label: {
-                       formatter : function(s) {
-                           return addPreZero(s);
+                    color:'#fff',
+                    formatter : function(s) {
+                        return addPreZero(s);
                     },
-                }
+                },
             },
-        backgroundColor: '#404a59',
+        //backgroundColor: '#404a59',
         title: {
             text: {{ province|safe }}+'出行系数',
-            //subtext:{{ time|safe }} + "  " + chexing,
+            subtext:time + "  " + getVehType(chexing),
             left: 'center',
             textStyle: {
                 color: '#fff'
@@ -170,9 +196,21 @@
     };
 
     function obtainData(op, dt){
-
-        for(var i=1;i<32;i++){
+        var ds = parseInt(days);
+        for(var i=1;i<(ds+1);i++){
             var key = addPreZero(i);
+            op['baseOption']['timeline']['data'].push(
+                {
+                    value:key,
+                    tooltip: {          // 让鼠标悬浮到此项时能够显示 `tooltip`。
+                        formatter: function (params) {
+                            return time + '-' + params.name;
+
+                        }
+                    }
+                },
+            );
+
             op['options'].push(
               {
                 visualMap: {
@@ -241,9 +279,9 @@
 
     $("#search").click(
         function () {
-            var period = $("#period").val();
-
-            location.href = "../" + period;
+            var date = $("#date").val();
+            var type = $("#vehType").val();
+            location.href = "../../../" + "重庆" + "/" + date + "/" + type;
         }
     );
 

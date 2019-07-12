@@ -7,6 +7,7 @@ import json
 from datetime import datetime,timedelta
 #import datetime
 import time
+import calendar
 # Create your views here.
 from django.db import transaction
 import os
@@ -1793,20 +1794,17 @@ def travelCoeByWeek(request, period):
                    'd4': json.dumps(d4), 'd5': json.dumps(d5), 'd6': json.dumps(d6), 'period': json.dumps(period)})
 
 def travelCoeByMonth(request, pro, time, vehType):
-    st = '2019-01-01'
-    ed = '2019-01-31'
-    stime = st.split('-')
-    etime = ed.split('-')
-    #data = models.TravelCoe.objects.filter(date=time, vehType=vehType).values('enSta_id', 'exSta_id', 'travelCoe')
+    year = int(time.split('-')[0])
+    mon = int(time.split('-')[1])
+    days = calendar.monthrange(year, mon)
+
     data = models.TravelCoe.objects.filter(vehType=vehType,
-                                            date__gte=datetime(int(stime[0]), int(stime[1]), int(stime[2])),
-                                            date__lte=datetime(int(etime[0]), int(etime[1]), int(etime[2])))\
+                                            date__gte=datetime(int(year), int(mon), int('01')),
+                                            date__lte=datetime(int(year), int(mon), int(days[1])))\
                                     .values('date', 'enSta_id', 'exSta_id', 'travelCoe').order_by('date')
 
     dt = {'01':[],'02':[],'03':[],'04':[],'05':[],'06':[],'07':[],'08':[],'09':[],'10':[],'11':[],'12':[],'13':[],'14':[],'15':[],
         '16': [],'17':[],'18':[],'19':[],'20':[],'21':[],'22':[],'23':[],'24':[],'25':[],'26':[],'27':[],'28':[],'29':[],'30':[],'31':[]}
-
-    startDate = datetime.date(datetime.strptime(st, '%Y-%m-%d'))
 
     for d in data:
         day = str(d['date']).split('-')[2]
@@ -1816,23 +1814,14 @@ def travelCoeByMonth(request, pro, time, vehType):
         tmp.append({'name': d['exSta_id'], 'value': d['travelCoe']})
         dt[index].append(tmp)
 
-    data0 = models.TravelCoe.objects.filter(date=time, vehType='1').values('enSta_id', 'exSta_id', 'travelCoe')
-
     stationdata = models.CqODLocation.objects.all()
     geo = {}
     for sd in stationdata:
         geo[sd.station_id] = [sd.longi, sd.lati]
 
-    d0 = []
-    for d in data0:
-        tmp = []
-        tmp.append({'name': d['enSta_id']})
-        tmp.append({'name': d['exSta_id'], 'value': d['travelCoe']})
-        d0.append(tmp)
-
     return render(request, 'travelCoeByMonth.html',
                   {'province': json.dumps(pro), 'geo': json.dumps(geo), 'dt': json.dumps(dt),
-                   'time': json.dumps(time), 'vehType': json.dumps(vehType),'d0': json.dumps(d0)})
+                   'time': json.dumps(time), 'vehType': json.dumps(vehType), 'days': json.dumps(days[1])})
 
 
 def db_handle(request):
