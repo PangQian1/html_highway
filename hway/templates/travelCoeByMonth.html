@@ -27,7 +27,8 @@
         </select>
         &nbsp&nbsp<button type="button" class="btn btn-default" style="white-space:nowrap" id="search">确定</button>
     </div>
-    <div id="container1" style="height:97%;width:100%;float:left"></div>
+    <div id="container1" style="height:97%;width:60%;float:left"></div>
+    <div id="container2" style="height:97%;width:40%;float:left"></div>
 </div>
 
 <!-- ECharts单文件引入 -->
@@ -214,7 +215,8 @@
             op['options'].push(
               {
                 visualMap: {
-                    left: 'right',
+                    right: '20%',
+                    top: '70%',
                     min: 20,
                     max: 70,
                     minOpen:true,
@@ -277,11 +279,82 @@
         myChart.setOption(option, true);
     }
 
+    var tve = {{ trafficvolume|safe }} ;
+    for(var i = 0 ; i < tve.length ; i++)
+    {
+        for(var j = 0 ; j < tve.length - i-1 ; j++ )
+        {
+            if(tve[j]['value']<tve[j+1]['value'])
+            {
+                var tmp = tve[j] ;
+                tve[j] = tve[j+1] ;
+                tve[j+1] = tmp ;
+            }
+        }
+    }
+    var min = tve[tve.length-1]['value'] ;
+    var max = tve[0]['value'] ;
+
+    dom = document.getElementById("container2");
+    var myChart2 = echarts.init(dom);
+    option = null;
+
+    option = {
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicInOut',
+        animationDurationUpdate: 1000,
+        animationEasingUpdate: 'cubicInOut',
+
+        tooltip : {
+            trigger: 'item'
+        },
+        visualMap: {
+            left: 'right',
+            top: '70%',
+            min: min,
+            max: max,
+            inRange: {
+                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+            },
+            text: ['High', 'Low'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        series : [
+          {
+              name:"全国入口收费站货车通过重量分布图",
+              type: 'map',
+              roam: false,
+              map: 'china',
+              left: '10' ,
+              top:'18%',
+              right: '10',
+              zoom: 0.9,
+              itemStyle: {
+                  emphasis: { label: { show: true } }
+              },
+              data: {{ trafficvolume|safe }}
+              // 文本位置修正
+
+          },
+        ]
+    };
+
+    if (option && typeof option === "object") {
+        myChart2.setOption(option, true);
+    }
+    myChart2.on('click', function (param) {
+        var name = param.name;
+        var date = $("#date").val();
+        var type = $("#vehType").val();
+        location.href="../../../" + name + "/" + date + "/" + type;
+    })
+
     $("#search").click(
         function () {
             var date = $("#date").val();
             var type = $("#vehType").val();
-            location.href = "../../../" + "重庆" + "/" + date + "/" + type;
+            location.href = "../../../" + {{ province|safe }} + "/" + date + "/" + type;
         }
     );
 

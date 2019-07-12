@@ -1798,10 +1798,14 @@ def travelCoeByMonth(request, pro, time, vehType):
     mon = int(time.split('-')[1])
     days = calendar.monthrange(year, mon)
 
-    data = models.TravelCoe.objects.filter(vehType=vehType,
-                                            date__gte=datetime(int(year), int(mon), int('01')),
-                                            date__lte=datetime(int(year), int(mon), int(days[1])))\
-                                    .values('date', 'enSta_id', 'exSta_id', 'travelCoe').order_by('date')
+    if(pro == '重庆'):
+        data = models.TravelCoe.objects.filter(vehType=vehType,
+                                               date__gte=datetime(int(year), int(mon), int('01')),
+                                               date__lte=datetime(int(year), int(mon), int(days[1]))) \
+            .values('date', 'enSta_id', 'exSta_id', 'travelCoe').order_by('date')
+    else:
+        data = []
+
 
     dt = {'01':[],'02':[],'03':[],'04':[],'05':[],'06':[],'07':[],'08':[],'09':[],'10':[],'11':[],'12':[],'13':[],'14':[],'15':[],
         '16': [],'17':[],'18':[],'19':[],'20':[],'21':[],'22':[],'23':[],'24':[],'25':[],'26':[],'27':[],'28':[],'29':[],'30':[],'31':[]}
@@ -1819,9 +1823,15 @@ def travelCoeByMonth(request, pro, time, vehType):
     for sd in stationdata:
         geo[sd.station_id] = [sd.longi, sd.lati]
 
+    trafficvolume = models.Province.objects.all().values('province', 'extrafficvolume')
+    tv = []
+    for d in trafficvolume:
+        tv.append({'name': d['province'], 'value': d['extrafficvolume']})
+
     return render(request, 'travelCoeByMonth.html',
                   {'province': json.dumps(pro), 'geo': json.dumps(geo), 'dt': json.dumps(dt),
-                   'time': json.dumps(time), 'vehType': json.dumps(vehType), 'days': json.dumps(days[1])})
+                   'time': json.dumps(time), 'vehType': json.dumps(vehType), 'days': json.dumps(days[1]),
+                   'trafficvolume': tv})
 
 
 def db_handle(request):
