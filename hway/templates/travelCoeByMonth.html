@@ -14,8 +14,9 @@
 
 <div style="height:100%; width: 100%; float: left;color:white">
     <div style="height: 3%; width: 100%;margin-left: 2%">
-        &nbsp&nbsp&nbsp&nbsp日期:&nbsp&nbsp<input id="date" type="month" value="2019-01" min="2016-01" max="2019-03" />
-        &nbsp&nbsp车型:&nbsp&nbsp
+        日期:
+        <input id="date" type="month" value="2019-01" min="2016-01" max="2019-03" style="margin-left: 5px" />
+        车型:
         <select name="aabb" id="vehType">
             <option value="0">0</option>
             <option value="1">1</option>
@@ -142,17 +143,18 @@
                 //     position: 'left'
                 // },
                 data: [],
-                emphasis:{
-                  label:{
-                      color:'#fff'
-                  }
-                },
                 label: {
-                    color:'#fff',
-                    formatter : function(s) {
+                    formatter: function (s) {
                         return addPreZero(s);
                     },
+                    textStyle: {
+                        color: '#fff'
+                    }
                 },
+                controlStyle: {
+                    emphasis: {color: '#fff'},
+                    normal: {color: '#fff'}
+                }
             },
         //backgroundColor: '#404a59',
         title: {

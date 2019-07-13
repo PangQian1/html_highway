@@ -1,1 +1,4 @@
 db.sqlite3
+highway/__pycache__/*
+.idea/*
+.DS_Store
